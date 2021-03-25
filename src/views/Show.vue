@@ -52,11 +52,8 @@ export default {
     },
     exportExcel(){
       var res = gExcel(this.dataList)
-       var aTag = document.createElement('a');
-        aTag.download = "ys.xlsx";
-        aTag.href = URL.createObjectURL(res);
-        aTag.click();
-        URL.revokeObjectURL(res);
+        // window.open(URL.createObjectURL(res),"ys.xlsx");
+        // URL.revokeObjectURL(res);
       // URL.createObjectURL()
       Notify({ type: 'success', message: '导出成功' }); 
       this.btDisplay=false
