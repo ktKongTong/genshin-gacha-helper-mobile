@@ -1,6 +1,6 @@
 // 数据处理
 import XLSX from "xlsx";
-import { saveAs } from 'file-saver';
+import FileSaver from 'file-saver';
 // 传入list
 function sortDataById(a, b) {
     for(let i=0;i<a.length;i++){
@@ -56,7 +56,9 @@ export function gExcel(dataList) {
     var blob = new Blob([s2ab(wbout)], {
         type: "application/octet-stream"
     });
-    saveAs(blob, "ysdata.xlsx");
+    // saveAs(blob, "ysdata.xlsx");
+    var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
+    FileSaver.saveAs(bl, "hello world.txt");
     return res;
     }
 // 字符串转ArrayBuffer
