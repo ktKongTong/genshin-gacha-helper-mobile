@@ -57,9 +57,9 @@ export function gExcel(dataList) {
         type: "application/octet-stream"
     });
     // saveAs(blob, "ysdata.xlsx");
-    var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
-    FileSaver.saveAs(bl, "hello world.txt");
-    return res;
+    // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
+    // FileSaver.saveAs(bl, "hello world.txt");
+    return blob;
     }
 // 字符串转ArrayBuffer
 function s2ab(s) {
