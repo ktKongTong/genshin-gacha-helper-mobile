@@ -54,7 +54,7 @@ export function gExcel(dataList) {
     };
     var wbout = XLSX.write(wb, wopts);
     var blob = new Blob([s2ab(wbout)], {
-        type: "application/octet-stream"
+        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     });
     // var reader = new FileReader()
     // reader.readAsDataURL(blob);   // 转换为base64，可以直接放入a标签href
