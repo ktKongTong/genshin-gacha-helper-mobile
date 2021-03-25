@@ -91,7 +91,7 @@ export default {
   components: {
   },
   methods:{
-      tips(){
+    tips(){
         Dialog.alert({
         title: 'url获取方式',
         message: "1.进入祈愿历史记录界面\n2.关闭网络\n3. 历史记录右上角刷新\n 4. 复制包含url的文字即可",
@@ -200,6 +200,4 @@ export default {
 
   }
 }
-
-
 </script>
