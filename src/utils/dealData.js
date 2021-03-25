@@ -42,8 +42,8 @@ export function gExcel(dataList) {
         XLSX.utils.book_append_sheet(wb, ws, elem.name);/* 生成xlsx文件(book,sheet数据,sheet命名) */
     })
     XLSX.writeFile(wb, "ysdata.xlsx");
-    console.log(ret)        
-        return ret;
+    // console.log(ret)
+    return ret;
     }
 export default{ gExcel
 }

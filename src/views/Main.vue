@@ -16,8 +16,12 @@
     :autosize="{ maxHeight: 100, minHeight: 50 }"
     :update:model-value='checkAuthkey()'
     />
-  <van-button v-on:click="click" :disabled="disabled">获取数据</van-button>
+    <div style="display:flex">
+    <van-button style="margin:0 auto" v-on:click="click" :disabled="disabled">获取数据</van-button>
+    <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>       
+    </div>
 </div>
+
 <van-overlay id="getDataStep" style="align-items:center;display:flex" :show="dialogVisible">
 <div style="align-items:center">
         <div style="background-color:#ffffff;
@@ -49,6 +53,7 @@
 </style>
 <script>
 import axios from 'axios'
+import { Dialog } from 'vant';
 export default {
   name: 'Home',
   data() {
@@ -69,6 +74,14 @@ export default {
   components: {
   },
   methods:{
+      tips(){
+        Dialog.alert({
+        title: 'url获取方式',
+        message: "1.进入祈愿历史记录界面\n2.关闭网络\n3. 历史记录右上角刷新\n 4. 复制包含url的文字即可",
+        }).then(() => {
+        // on close
+        });
+      },
     //   检测authkey
       checkAuthkey(){
           var url = this.url
@@ -76,7 +89,6 @@ export default {
           var patt = 'http(s)?://.+(log)'
           var res = url.match(patt0)
           if (res != null){
-            console.log(url.match(patt)[0])   
             this.authkey = res[0].slice(8,-5)
             this.disabled=false
           }else{
@@ -132,14 +144,14 @@ export default {
                         gacha_type:gacha_type,page:page,end_id:end_id},
                 }).then((res)=>{
                     let data = res.data
-                    console.log(res)
+                    // console.log(res)
                     if(res.status==502||(res.status==200&&res.data["retcode"]==-1024)){
                         that.setState(stepState,"函数执行出错，如有需要，请联系开发者")
                         that.ctn=false
                     }else if(res.status==200&&res.data["message"]=="OK"){
                         if(data.data["list"].length>0){
                             that.setState(stepState,gacha_type_name+"第"+data.data["page"]+"获取完毕")
-                            console.log(gacha_type_name+"第"+data.data["page"]+"获取完毕")
+                            // console.log(gacha_type_name+"第"+data.data["page"]+"获取完毕")
                             if(data.data["list"].length<6){
                                 hasData=false
                             }
@@ -151,6 +163,10 @@ export default {
                         }else{
                             hasData=false
                         }
+                    }else if(res.status==200&&res.data["message"]!="OK"){
+                        hasData=false
+                        that.setState(stepState,"似乎是authkey出了问题")
+                        that.ctn=false
                     }else{
                         hasData=false
                         that.setState(stepState,"未知错误")
