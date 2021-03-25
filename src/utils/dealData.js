@@ -64,10 +64,10 @@ export function gExcel(dataList) {
     //     a.href = e.target.result;
     //     a.click();
     // }
-    // window.open(URL.createObjectURL(blob))
+    window.open(URL.createObjectURL(blob))
     // saveAs(blob, "ysdata.xlsx");
     // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
-    FileSaver.saveAs(blob, "ysdata.xlsx");
+    // FileSaver.saveAs(blob, "ysdata.xlsx");
     return blob;
     }
 // 字符串转ArrayBuffer
