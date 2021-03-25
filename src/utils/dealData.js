@@ -56,15 +56,15 @@ export function gExcel(dataList) {
     var blob = new Blob([s2ab(wbout)], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     });
-    // var reader = new FileReader()
-    // reader.readAsDataURL(blob);   // 转换为base64，可以直接放入a标签href
-    // reader.onload = function (e) {
-    //     var a = document.createElement('a');   // 转换完成，创建一个a标签用于下载
-    //     a.download = 'XX数据.xlsx';
-    //     a.href = e.target.result;
-    //     a.click();
-    // }
-    // window.open(URL.createObjectURL(blob))
+
+    let blobURL = URL.createObjectURL(blob)
+    var xhr = new XMLHttpRequest();
+    xhr.open("get",blobURL,true);
+    xhr.responseType='blob'
+    xhr.onreadystatechange = function(){
+        var blobURL = URL.createObjectURL(xhr.response);
+    }
+    xhr.send()
     // saveAs(blob, "ysdata.xlsx");
     // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
     // FileSaver.saveAs(blob, "ysdata.xlsx");
