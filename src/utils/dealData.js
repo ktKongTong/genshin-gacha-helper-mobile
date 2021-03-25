@@ -59,11 +59,16 @@ export function gExcel(dataList) {
 
     let blobURL = URL.createObjectURL(blob)
     var xhr = new XMLHttpRequest();
-    xhr.open("get",blobURL,true);
+    xhr.open("GET",blobURL,true);
     xhr.responseType='blob'
     xhr.onreadystatechange = function(){
-        var blobURL = URL.createObjectURL(xhr.response);
+        if(xhr.readyState===4&&xhr.status==200){
+            var blobURL = URL.createObjectURL(xhr.response);
+            console.log(blobURL)
+        }
+
     }
+    console.log(xhr)
     xhr.send()
     // saveAs(blob, "ysdata.xlsx");
     // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
