@@ -19,9 +19,26 @@
     <div style="display:flex">
     <van-button style="margin:0 auto" v-on:click="click" :disabled="disabled">获取数据</van-button>
     <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>       
+    
     </div>
 </div>
+<van-notice-bar style="margin-top:20px"
+        wrapable
+        :scrollable="false"
+        text="重要!
+        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求。
+        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发
+        在响应的时候告诉浏览器表示允许非同源请求。
+        我可以使用该封装接口做到记录使用者的一些信息，如可能包含敏感信息的authkey或是你的祈愿记录;
+        我想表述的是:我使用该接口做的仅仅是转发，没有做任何记录，连阿里云的日志记录都关闭了。
+        请自行抉择是否使用该工具"
+    />
 
+<van-notice-bar
+        wrapable
+        :scrollable="false"
+        text="部分浏览器(如via/一加)不支持前端直接生成文件，无法导出xlsx文件"
+    />
 <van-overlay id="getDataStep" style="align-items:center;display:flex" :show="dialogVisible">
 <div style="align-items:center">
         <div style="background-color:#ffffff;
