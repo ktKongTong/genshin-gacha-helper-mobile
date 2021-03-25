@@ -52,6 +52,17 @@ export default {
     },
     exportExcel(){
       var res = gExcel(this.dataList)
+      let link = document.createElement('a');
+    let objectUrl = URL.createObjectURL(res);
+    //将a标签的href指向数据流
+    link.setAttribute("href",objectUrl);
+    let fileName = 'export-'+ new Date().getTime() + '.csv'
+    //设置a标签的download属性，及文件名
+    link.setAttribute("download",fileName); 
+    //触发a标签点击
+    link.click();
+    //释放blob对象，避免内存溢出
+    window.URL.revokeObjectURL(link.href)
         // window.open(URL.createObjectURL(res),"ys.xlsx");
         // URL.revokeObjectURL(res);
       // URL.createObjectURL()
