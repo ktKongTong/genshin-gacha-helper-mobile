@@ -56,25 +56,20 @@ export function gExcel(dataList) {
     var blob = new Blob([s2ab(wbout)], {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     });
-
-    let blobURL = URL.createObjectURL(blob)
-    var xhr = new XMLHttpRequest();
-    xhr.open("GET",blobURL,true);
-    xhr.responseType='blob'
-    xhr.onreadystatechange = function(){
-        if(xhr.readyState===4&&xhr.status==200){
-            var blobURL = URL.createObjectURL(xhr.response);
-            console.log(blobURL)
-        }
-
-    }
-    console.log(xhr)
-    xhr.send()
-    // saveAs(blob, "ysdata.xlsx");
+    readBlobAsDataURL(blob, function (dataurl){
+        console.log(dataurl);
+    });
+    saveAs(blob, "ysdata.xlsx");
     // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
     // FileSaver.saveAs(blob, "ysdata.xlsx");
     return blob;
     }
+
+function readBlobAsDataURL(blob, callback) {
+    var a = new FileReader();
+    a.onload = function(e) {callback(e.target.result);};
+    a.readAsDataURL(blob);
+}
 // 字符串转ArrayBuffer
 function s2ab(s) {
     var buf = new ArrayBuffer(s.length);
