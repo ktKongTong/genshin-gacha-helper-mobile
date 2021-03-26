@@ -57,12 +57,22 @@ export function gExcel(dataList) {
         type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
     });
     readBlobAsDataURL(blob, function (dataurl){
-        console.log(dataurl);
+        let link = document.createElement('a');
+    //   let objectUrl = URL.createObjectURL(dataurl);
+      link.setAttribute("href",dataurl);
+    //   link.setAttribute("download","ys.xlsx");
+      let fileName = 'export-'+ new Date().getTime() + '.xlsx'
+      link.setAttribute("download",fileName); 
+      //触发a标签点击
+      link.click();
+      //释放blob对象，避免内存溢出
+      window.URL.revokeObjectURL(link.href)
+        // return dataurl
     });
-    saveAs(blob, "ysdata.xlsx");
+    // saveAs(blob, "ysdata.xlsx");
     // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
     // FileSaver.saveAs(blob, "ysdata.xlsx");
-    return blob;
+    // return da;
     }
 
 function readBlobAsDataURL(blob, callback) {
