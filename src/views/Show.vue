@@ -53,22 +53,8 @@ export default {
     exportExcel(){
       var res = gExcel(this.dataList)
       console.log(res)
-      // let link = document.createElement('a');
-      // let objectUrl = URL.createObjectURL(res);
-      // link.setAttribute("href",res);
-      // link.setAttribute("download","ys.xlsx");
-      // let fileName = 'export-'+ new Date().getTime() + '.xlsx'
-      // link.setAttribute("download",fileName); 
-      // //触发a标签点击
-      // link.click();
-      // //释放blob对象，避免内存溢出
-      // window.URL.revokeObjectURL(link.href)
-        // window.open(URL.createObjectURL(res),"ys.xlsx");
-        // URL.revokeObjectURL(res);
-      // URL.createObjectURL()
       Notify({ type: 'success', message: '导出成功' }); 
       this.btDisplay=false
-      // var d4f = new DataFrame(this.dataList)
     }
   }
 }

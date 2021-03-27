@@ -1,6 +1,7 @@
 // 数据处理
 import XLSX from "xlsx";
-import FileSaver from 'file-saver';
+import {saveAs} from 'file-saver';
+import download from 'downloadjs'
 // 传入list
 function sortDataById(a, b) {
     for(let i=0;i<a.length;i++){
@@ -15,7 +16,10 @@ export function gExcel(dataList) {
     let  res = dataList.sort(sortDataById)
     let ret = {}
     var wb = XLSX.utils.book_new();/*新建book*/
-    var tL=[{"name":"角色活动祈愿","value":"301"},{"name":"常驻祈愿","value":"200"},{"name":"新手祈愿","value":"100"},{"name":"武器活动祈愿","value":"302"}]
+    var tL=[{"name":"角色活动祈愿","value":"301"},
+    {"name":"常驻祈愿","value":"200"},
+    {"name":"新手祈愿","value":"100"},
+    {"name":"武器活动祈愿","value":"302"}]
     tL.forEach(elem => {
         let dataRes = []
         let data = res.filter(item=>item.gacha_type==elem["value"])
@@ -46,40 +50,34 @@ export function gExcel(dataList) {
         var ws = XLSX.utils.json_to_sheet(dataRes);/* 新建空workbook，然后加入worksheet */        
         XLSX.utils.book_append_sheet(wb, ws, elem.name);/* 生成xlsx文件(book,sheet数据,sheet命名) */
     })
-    // XLSX.writeFile(wb, "ysdata.xlsx");
-    var wopts = {
-        bookType: 'xlsx', // 要生成的文件类型
-        bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
-        type: 'binary'
-    };
-    var wbout = XLSX.write(wb, wopts);
-    var blob = new Blob([s2ab(wbout)], {
-        type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-    });
-    readBlobAsDataURL(blob, function (dataurl){
-        let link = document.createElement('a');
-    //   let objectUrl = URL.createObjectURL(dataurl);
-      link.setAttribute("href",dataurl);
-    //   link.setAttribute("download","ys.xlsx");
-      let fileName = 'export-'+ new Date().getTime() + '.xlsx'
-      link.setAttribute("download",fileName); 
-      //触发a标签点击
-      link.click();
-      //释放blob对象，避免内存溢出
-      window.URL.revokeObjectURL(link.href)
-        // return dataurl
-    });
-    // saveAs(blob, "ysdata.xlsx");
-    // var bl = new Blob(["Hello, world!"], {type: "text/plain;charset=utf-8"});
-    // FileSaver.saveAs(blob, "ysdata.xlsx");
-    // return da;
+        // XLSX.writeFile(wb, "ysdata.xlsx");
+        var wopts = {
+            bookType: 'xlsx', // 要生成的文件类型
+            bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
+            type: 'binary'
+        };
+        var wbout = XLSX.write(wb, wopts);
+        var blob = new Blob([s2ab(wbout)], {
+            type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        });
+        download(blob,"ysdata.xlsx","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet")
+        // saveAs(blob, "ysdata.xlsx","");
+        return blob
     }
-
-function readBlobAsDataURL(blob, callback) {
-    var a = new FileReader();
-    a.onload = function(e) {callback(e.target.result);};
-    a.readAsDataURL(blob);
-}
+// dataURL
+    // readBlobAsDataURL(blob, function (dataurl){
+    //     let link = document.createElement('a');
+    //   link.setAttribute("href",dataurl);
+    //   let fileName = 'export-'+ new Date().getTime() + '.xlsx'
+    //   link.setAttribute("download",fileName); 
+    //   link.click();
+    //   window.URL.revokeObjectURL(link.href)
+    // });
+// function readBlobAsDataURL(blob, callback) {
+//     var a = new FileReader();
+//     a.onload = function(e) {callback(e.target.result);};
+//     a.readAsDataURL(blob);
+// }
 // 字符串转ArrayBuffer
 function s2ab(s) {
     var buf = new ArrayBuffer(s.length);
