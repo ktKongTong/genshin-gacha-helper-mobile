@@ -2,7 +2,7 @@
 import XLSX from "xlsx";
 // 传入list
 function sortDataById(a, b) {
-    for(let i=0;i<a.length;i++){
+    for(let i=0;i<a.id.length;i++){
         if(parseInt(a.id[i])>parseInt(b.id[i])){
             return -1
         }else if(parseInt(a.id[i])<parseInt(b.id[i])){
