@@ -22,6 +22,7 @@
     
     </div>
 </div>
+
 <van-notice-bar style="margin-top:20px"
         wrapable
         :scrollable="false"
@@ -91,7 +92,9 @@ export default {
   components: {
   },
   methods:{
+        
     tips(){
+
         Dialog.alert({
         title: 'url获取方式',
         message: "1.进入祈愿历史记录界面\n2.关闭网络\n3. 历史记录右上角刷新\n 4. 复制包含url的文字即可",

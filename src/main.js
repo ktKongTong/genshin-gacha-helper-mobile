@@ -4,7 +4,7 @@ import router from './router'
 import store from './store'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
-import Vant from 'vant';
+import Vant,{Uploader} from 'vant';
 import 'vant/lib/index.css';
 
 // 手动引入 ECharts 各模块来减小打包体积
@@ -25,6 +25,6 @@ use([
   TooltipComponent
 ]);
 
-const app = createApp(App).use(store).use(router).use(Vant);
+const app = createApp(App).use(store).use(router).use(Vant).use(Uploader);
 app.component('v-chart', ECharts)
 app.mount('#app')
