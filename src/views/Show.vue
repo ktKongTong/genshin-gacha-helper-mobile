@@ -361,6 +361,7 @@ export default {
     }catch{
       Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
       this.dataList = JSON.parse(localStorage.getItem("dataList"));
+      this.Init()
     }
   },
   methods:{
