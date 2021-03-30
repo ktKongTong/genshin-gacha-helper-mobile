@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "danfojs": "^0.2.4",
     "echarts": "^5.0.2",
     "echarts-wordcloud": "^2.0.0",
     "file-saver": "^2.0.5",

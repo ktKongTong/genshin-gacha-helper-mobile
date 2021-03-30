@@ -1,0 +1,23 @@
+{
+  "id": "",
+  "name": "",
+  "font_family": "iconfont",
+  "css_prefix_text": "icon-",
+  "description": "",
+  "glyphs": [
+    {
+      "icon_id": "5726390",
+      "name": "选项",
+      "font_class": "xuanxiang",
+      "unicode": "e7ea",
+      "unicode_decimal": 59370
+    },
+    {
+      "icon_id": "12387147",
+      "name": "筛选",
+      "font_class": "shaixuan",
+      "unicode": "e90c",
+      "unicode_decimal": 59660
+    }
+  ]
+}
