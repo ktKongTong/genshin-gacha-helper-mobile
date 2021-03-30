@@ -74,16 +74,19 @@
   </div>
   </van-tab>
   <van-tab title="祈愿次数">
-<van-empty description="描述文字">
-</van-empty>
+  <div>
+    <v-chart autoresize style="height:300px" :option="heatmapOption"/>
+  </div>
+  <div>
+    <v-chart autoresize style="height:300px" :option="barOption"/>
+  </div>
   </van-tab>
   <van-tab title="时间轴">
 <van-empty description="描述文字">
 </van-empty>
   </van-tab>
   <van-tab title="词云">
-<van-empty description="描述文字">
-</van-empty>
+ <v-chart style="height: 300px;width: auto;margin: 0 auto"  autoresize :option="wordOption"/>
   </van-tab>
 </van-tabs>
   <div>
@@ -108,7 +111,7 @@ import { ref } from 'vue';
 import '../assets/iconfont.css'
 import { Notify,Toast,Tab, Tabs,Tabbar,TabbarItem } from 'vant';
 import Filter from '../components/Filter.vue'
-import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,getRankCountData} from '../utils/dealData.js'
+import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,getRankCountData,getGachaCount,getWordCloudData,getBase64} from '../utils/dealData.js'
 
 export default {
   name: 'Show',
@@ -168,6 +171,180 @@ export default {
                         }
                     ]
       },
+      barOption: {
+        tooltip: {
+            trigger: 'axis',
+            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
+                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
+            }
+        },
+        legend: {
+            data: ["3星武器","4星武器","5星武器","4星角色","5星角色"]
+        },
+        grid: {
+            left: '3%',
+            right: '4%',
+            bottom: '3%',
+            containLabel: true
+        },
+        xAxis: [
+            {
+                type: 'category',
+                data: ["2012-12-12"]
+            }
+        ],
+        yAxis: [
+            {
+                type: 'value'
+            }
+        ],
+        series: [
+            {
+                name: '3星武器',
+                type: 'bar',
+                stack:'day',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: []
+            },{
+                name: '4星武器',
+                type: 'bar',
+                stack:'day',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: []
+            },{
+                name: '5星武器',
+                type: 'bar',
+                stack:'day',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: []
+            },{
+                name: '4星角色',
+                type: 'bar',
+                stack:'day',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: []
+            },{
+                name: '5星角色',
+                type: 'bar',
+                stack:'day',
+                emphasis: {
+                    focus: 'series'
+                },
+                data: []
+            },
+        ]
+      },
+      heatmapOption:{
+          title: {
+              top: 30,
+              left: 'center',
+              text: '祈愿热力图'
+          },
+          legend:{
+            top:60,
+            left:"center",
+            orient:"horizontal"
+          },
+          tooltip: {
+            formatter:function (params, ticket, callback) {
+                return params.data[0]+" : "+params.data[1]
+            }
+          },
+          calendar: {
+              splitLine:{
+                show:false
+              },
+              top: 120,
+              left: 30,
+              right: 30,
+              cellSize: [15, 15],
+              range: ['2020-09-25', '2021-03-30'],
+              itemStyle: {
+                  borderWidth: 4,
+                  borderColor:"#ffffff"
+              },
+              dayLabel:{
+                firstDay:1,
+                position:"end",
+                nameMap:"cn"
+              },
+              yearLabel: {show: true}
+          },
+          visualMap:{
+            type:"piecewise",
+            orient: 'horizontal',
+            left: 'center',
+            top: 65,
+            pieces: [
+                {min:50,color:'#134121'},
+                // {min: 50,max:100,color:'#19532B'},
+                {min: 20, max: 50,color:'#24763D'},
+                {min: 10, max: 20,color:'#2B8D49'},
+                {min: 5, max: 10,color:'#3AC063'},
+                {min: 3, max: 5,color:"#72D490"},
+                {min: 1, max: 3,color:"#9be9a8"},
+                {max: 1,color:"#ebedf0"}
+            ],
+
+          },
+          series: {
+              type: 'heatmap',
+              coordinateSystem: 'calendar',
+              data: []
+          }
+      },
+      wordOption: {
+        tooltip:{
+            trigger: 'item',
+            triggerOn: "mousemove",
+            formatter:"{b0}: {c0}"
+        },
+        series: [{
+        name: '祈愿词云',
+        type: 'wordCloud',
+        maskImage: '',
+        left: 'center',
+        top: 'center',
+        width: '70%',
+        height: '80%',
+        right: null,
+        bottom: null,
+        sizeRange: [20, 35],
+        rotationRange: [-90, 90],
+        rotationStep: 45,
+        gridSize: 1,
+        // drawOutOfBound: false,
+        layoutAnimation: true,
+        textStyle: {
+            fontFamily: 'sans-serif',
+            fontWeight: 'bold',
+            // color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'],
+            color: function () {
+                return 'rgb(' + [
+                    Math.round(Math.random() * 160),
+                    Math.round(Math.random() * 160),
+                    Math.round(Math.random() * 160)
+                ].join(',') + ')';
+            }
+        },
+        emphasis: {
+            focus: 'self',
+            textStyle: {
+                shadowBlur: 10,
+                shadowColor: '#333'
+            }
+        },
+        data: []
+        }]
+      },
     }
   },
   components: {
@@ -179,6 +356,7 @@ export default {
     // 读取传过来的数据
     try{
       this.dataList = JSON.parse(this.$route.params.dataList)
+      this.Init()
       localStorage.setItem("dataList", JSON.stringify(this.dataList));
     }catch{
       Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
@@ -197,9 +375,31 @@ export default {
       this.rank4WeaponList = res.rank4WeaponList
       this.rank5Avg = res.rank5Avg
       this.rank4Avg = res.rank4Avg
+      var countres = getGachaCount(this.dataList)
+      this.barOption.xAxis[0].data=countres.barData.index
+      this.barOption.series[0].data=countres.barData.rank3weapon
+      this.barOption.series[1].data=countres.barData.rank4weapon
+      this.barOption.series[2].data=countres.barData.rank5weapon
+      this.barOption.series[3].data=countres.barData.rank4role
+      this.barOption.series[4].data=countres.barData.rank5role
+      this.heatmapOption.series.data=countres.heatmap.data
+      this.heatmapOption.calendar.range=countres.heatmap.range
+      this.setMaskImage(getBase64())
+      this.wordOption.series[0].data=getWordCloudData(this.dataList)
+      // console.log(countres)
+      this.showPopover=false
+    },
+    setMaskImage(bs){
+      var that=this
+      var maskImage = new Image()
+      maskImage.src =bs
+      maskImage.onload = function() {
+        that.wordOption.series[0].maskImage = maskImage
+      }
     },
     // 读取文件之后
     async afterRead(file){
+      this.showPopover=false
       try{
           const json=await fileToJson(file.file)
           var res = mergeJson(this.dataList,json)
@@ -212,18 +412,19 @@ export default {
       }catch{
           Notify({ type: 'danger', message: '合并失败，可能是哪里出了问题🙁'});
       }
+      
     },
     // 导出Excel
     exportExcel(){
       var res = gExcel(this.dataList)
-      Notify({ type: 'success', message: '导出成功' }); 
-      this.btDisplay=false
+      Notify({ type: 'success', message: '导出成功' });
+      this.showPopover=false
     },
     // 导出JSON
     exportJson(){
       var res = gRawJson(this.dataList)
-      Notify({ type: 'success', message: '导出成功' }); 
-      this.btDisplay=false
+      Notify({ type: 'success', message: '导出成功' });
+      this.showPopover=false
     },
   }
 }

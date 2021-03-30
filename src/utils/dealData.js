@@ -6,14 +6,27 @@ var tL=[{"name":"角色活动祈愿","value":"301"},
 {"name":"新手祈愿","value":"100"},
 {"name":"武器活动祈愿","value":"302"}]
 
-
-class DealData{
-    constructor(dataList){
-        this.dataList = dataList.sort(sortDataById)
+export function getWordCloudData(dataList){
+    // name:"",value:""
+    var data = dataList.sort(sortDataById).reverse()
+    var tmp = {}
+    data.forEach(elem=>{
+        if(tmp.hasOwnProperty(elem.name)){
+            tmp[elem.name]++
+        }else{
+            tmp[elem.name]=1
+        }
+    })
+    var res = []
+    for(var elem in tmp){
+        res.push({
+            "name":elem,
+            "value":tmp[elem]
+        })
     }
-
-
+    return res
 }
+
 // 根据id排序
 function sortDataById(a, b) {
     for(let i=0;i<a.id.length;i++){
@@ -25,12 +38,116 @@ function sortDataById(a, b) {
     }
 }
 
+// 日期格式化
+function formatDate(date) {
+    var d = new Date(date),
+      month = '' + (d.getMonth() + 1),
+      day = '' + d.getDate(),
+      year = d.getFullYear();   
+    if (month.length < 2) month = '0' + month;
+    if (day.length < 2) day = '0' + day;
+    return [year, month, day].join('-');
+}
+
+// 字符串日期加1
+function dayAdd(date){
+    var d = new Date(date)
+    var dt = new Date(Number(d)+(24*60*60*1000))
+    return formatDate(Number(dt))
+}
 // 获取抽卡次数
 export function getGachaCount(dataList){
     var data = dataList.sort(sortDataById).reverse()
-    var res = [[],[],[],[]]
-    
+    var serieslist = {
+        "3星武器":[],
+        "4星武器":[],
+        "5星武器":[],
+        "4星角色":[],
+        "5星角色":[]
+        // 可能添加单日不同池子的统计信息
+    }
+    var heatmap = []
+    var currentDate = "2020-09-15"
+    var count3w=0
+    var count4w=0
+    var count5w=0
+    var count4r=0
+    var count5r=0
+    var index = []
+    var heatmapRange=[]
+    if(data.length>0){
+        currentDate = data[0].time.slice(0,10)
+        heatmapRange.push(data[0].time.slice(0,10))
+        heatmapRange.push(data[data.length-1].time.slice(0,10))
+    }
+    data.forEach(elem=>{
+        // 单日结束
+        if(currentDate!=elem.time.slice(0,10)){
+            // 结算上一日
+            let total = count3w+count4w+count5w+count4r+count5r
+            heatmap.push([currentDate,total])
+            serieslist["3星武器"].push(count3w)
+            serieslist["4星武器"].push(count4w)
+            serieslist["5星武器"].push(count5w)
+            serieslist["4星角色"].push(count4r)
+            serieslist["5星角色"].push(count5r)
+            count3w=0
+            count4w=0
+            count5w=0
+            count4r=0
+            count5r=0
+            index.push(currentDate)
+            // 日期+1
+            currentDate=dayAdd(currentDate)
+            while(currentDate!=elem.time.slice(0,10)){
+                heatmap.push([currentDate,0])
+                serieslist["3星武器"].push(0)
+                serieslist["4星武器"].push(0)
+                serieslist["5星武器"].push(0)
+                serieslist["4星角色"].push(0)
+                serieslist["5星角色"].push(0)
+                index.push(currentDate)
+                // 日期+1
+                currentDate=dayAdd(currentDate)
+            }
+        }
+        // 更新当前处理日期
+        currentDate = elem.time.slice(0,10)
+        switch(true){
+            case elem.rank_type=="3"&&elem.item_type=="武器":
+                count3w++;break
+            case elem.rank_type=="4"&&elem.item_type=="武器":
+                count4w++;break
+            case elem.rank_type=="5"&&elem.item_type=="武器":
+                count5w++;break
+            case elem.rank_type=="4"&&elem.item_type=="角色":
+                count4r++;break
+            case elem.rank_type=="5"&&elem.item_type=="角色":
+                count5r++;break
+        }
+    })
+    // 四个List
+    // 一点，空日期需不需要统计
+    // console.log(serieslist)
+    // console.log(heatmap)
+    var res = {
+        "barData":{
+            "rank3weapon":serieslist["3星武器"],
+            "rank4weapon":serieslist["4星武器"],
+            "rank5weapon":serieslist["5星武器"],
+            "rank4role":serieslist["4星角色"],
+            "rank5role":serieslist["5星角色"],
+            "index":index
+        },
+        "heatmap":{
+            "data":heatmap,
+            "range":heatmapRange
+        }
+    }
+    return res
 }
+
+
 // 获取指定rank的List，增加count5/4字段
 export function getRankCountData(dataList){
     var data = dataList.sort(sortDataById).reverse()
@@ -247,4 +364,11 @@ export async function fileToJson (file) {
         reader.readAsText(new Blob([file]), 'utf-8') // 按照utf-8编码解析
     })
 }
-export default{gExcel,gRawJson,fileToJson,getPieData,getRankCountData}
+
+
+
+export function getBase64(){
+    return "test"
+}
+
+export default{gExcel,gRawJson,fileToJson,getPieData,getRankCountData,getGachaCount,getWordCloudData,getBase64}

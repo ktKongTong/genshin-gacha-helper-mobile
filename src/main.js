@@ -4,6 +4,7 @@ import router from './router'
 import store from './store'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
+import 'echarts-wordcloud'
 import Vant,{Uploader, Tab, Tabs, Sidebar, SidebarItem,
   Tabbar,TabbarItem,NavBar,Icon,Popover,Cell, CellGroup,Rate,Collapse,CollapseItem } from 'vant';
 
@@ -21,7 +22,10 @@ import {
 import {
   LegendComponent,
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  TitleComponent,
+  CalendarComponent,
+  VisualMapComponent
 } from 'echarts/components'
 use([
   CanvasRenderer,
@@ -30,7 +34,10 @@ use([
   HeatmapChart,
   LegendComponent,
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  TitleComponent,
+  CalendarComponent,
+  VisualMapComponent
 ]);
 
 const app = createApp(App).use(store).use(router).use(Vant).use(Uploader)
