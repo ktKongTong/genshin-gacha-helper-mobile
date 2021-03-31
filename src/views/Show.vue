@@ -1,38 +1,40 @@
 
 <template>
 <div>
-  <!-- 顶部导航 -->
-<van-nav-bar title="" fixed left-text="筛选" :border='false' :placeholder='true'>
-  <!-- 筛选 -->
-  <template #left>
-    <van-popover v-model:show="showPopoverLeft" placement="bottom-start">
-      <div>
-        <van-checkbox-group v-model="checkboxGroup">
-          <van-checkbox v-for="name in names" :name="name['value']" :key="name['value']">{{name["name"]}}</van-checkbox>
-        </van-checkbox-group>
-      </div>
-      <template #reference>
-        <van-icon class-prefix="iconfont icon-shaixuan" name="extra"></van-icon>
-      </template>
-    </van-popover>
-  </template>
-  <template #title>
+<!-- 顶部自定义导航 -->
+<div style="width:100%;">
+  <div style="display:flex; align-items:center" class="topNav">
+    <div style="width:7vw;height:100%">
+      <van-popover  v-model:show="showPopoverLeft" placement="bottom-start">
+        <div style="margin:20px 20px 10px 20px;">
+          <van-checkbox-group v-model="checkboxGroup">
+            <van-checkbox v-for="name in names" :name="name['value']" :key="name['value']">{{name["name"]}}</van-checkbox>
+          </van-checkbox-group>
+          <div style="display:flex">
+          <van-button style="margin:4px auto" v-on:click="gachaTypeUpDate" size="small">确认</van-button>
+          </div>
+        </div>
+        <template #reference>
+          <van-icon style="margin:0 auto" class-prefix="iconfont icon-menu" name="extra"></van-icon>
+        </template>
+      </van-popover>
+    </div>
     <div style="display:flex" >
       <van-field v-model="StartDate" class='dateInput' style="margin:0 auto" label-width='0' placeholder="起始日期" disabled v-on:click="DatePicker(true)"/>
-    <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha"><span style="font-size:12px"> 快捷选择</span></div>
+      <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha">
+      <!-- <span style="font-size:12px"> 快捷选择</span> -->
+      </div>
       <van-field v-model="EndDate" class='dateInput'  style="margin:0 auto"  label-width='0' placeholder="结束日期" disabled v-on:click="DatePicker(false)" />
+      <van-popup v-model:show="DatePickerShow" :closeable="false" position="bottom" round :style="{ height: '400px' }">
+        <div style="line-height:2;margin-top:15px;display:flex;width:100vw">
+          <span style="margin:0 auto">{{currentPicker?'起始日期':'截止日期'}}</span>
+          <span style="margin-right:30px;margin-left:auto;color:#0000ff" v-on:click="UpDateTime">确认</span>      
+        </div>
+        <van-datetime-picker v-model="tmpDate" type="datetime" :min-date="currentPicker?StartMinDate:EndMinDate" :max-date="currentPicker?StartMaxDate:EndMaxDate">
+        <template #default></template></van-datetime-picker>
+      </van-popup>
     </div>
-    <van-popup v-model:show="DatePickerShow" :closeable="false" position="bottom" round :style="{ height: '400px' }">
-    <div style="line-height:2;margin-top:15px;display:flex;width:100vw">
-      <span style="margin:0 auto">{{currentPicker?'起始日期':'截止日期'}}</span>
-      <span style="margin-right:30px;margin-left:auto;color:#0000ff" v-on:click="UpDateTime">确认</span>      
-    </div>
-      <van-datetime-picker v-model="tmpDate" type="datetime" :min-date="currentPicker?StartMinDate:EndMinDate" :max-date="currentPicker?StartMaxDate:EndMaxDate">
-      <template #default></template></van-datetime-picker>
-    </van-popup>
-  </template>
-  <!-- 菜单弹出框 -->
-  <template #right>
+    <div style="width:7vw">
     <van-popover v-model:show="showPopover" placement="bottom-end">
         <van-uploader accept='application/json' :after-read="afterRead">
         <van-cell title="合并历史记录(JSON)" />
@@ -45,11 +47,12 @@
       <van-cell title="祈愿记录分析工具" arrow-direction='test' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
       <template #reference>
-        <van-icon class-prefix="iconfont icon-xuanxiang" name="extra"/>
+        <van-icon style="margin:0 auto" class-prefix="iconfont icon-shaixuan" name="extra"/>
       </template>
     </van-popover>
-  </template>
-</van-nav-bar>
+    </div>
+</div>
+</div>
 <van-tabs v-model:active="active" swipeable>
   <van-tab title="总览">
   <div>
@@ -97,31 +100,19 @@
   </div>
   </van-tab>
   <van-tab title="祈愿次数">
-  <div>
-    <v-chart autoresize style="height:30vh" :option="heatmapOption"/>
-  </div>
-  <div>
-    <v-chart autoresize style="height:60vh" :option="barOption"/>
-  </div>
+    <div>
+      <v-chart autoresize style="height:30vh" :option="heatmapOption"/>
+    </div>
+    <div>
+      <v-chart autoresize style="height:60vh" :option="barOption"/>
+    </div>
   </van-tab>
   <van-tab title="词云">
-  <div>
- <v-chart style="height:80vh;width: auto;margin: 0 auto"  autoresize :option="wordOption"/>
-  </div>
- 
+    <div>
+    <v-chart style="height:80vh;width: auto;margin: 0 auto"  autoresize :option="wordOption"/>
+    </div> 
   </van-tab>
 </van-tabs>
-    <div>
-    <!-- 筛选弹出框 -->
-    <van-popup v-model:show="filterShow"
-    :style="{width:'50vw',height:'100%'}"
-    position="left">
-    <!-- <Filter/> -->
-    </van-popup>
-  </div>
-
-
-
 </div>
 
 </template>
@@ -130,13 +121,19 @@
     .dateInput > div > div > input{
       text-align: center !important;
     }
+    .topNav > span {
+      margin:0 auto;
+    }
+    .van-checkbox{
+      margin:5px auto;
+    }
 </style>
 <script>
 import { ref } from 'vue';
 import '../assets/iconfont.css'
 import { Notify,Toast,Tab, Tabs,Tabbar,TabbarItem } from 'vant';
-// import Filter from '../components/Filter.vue'
-import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,getRankCountData,getGachaCount,getWordCloudData,getBase64} from '../utils/dealData.js'
+import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,
+getRankCountData,getGachaCount,getWordCloudData,filterData,dateFormat} from '../utils/dealData.js'
 
 export default {
   name: 'Show',
@@ -144,12 +141,13 @@ export default {
   },
   data() {
     return {
+      value2:"a",
       showPopoverLeft:false,
       checkboxGroup: ["100","200","301","302"],
       names: [{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}],
       currentPicker:true,
-      StartDate:'2020-09-15',
-      EndDate:"2021-03-30",
+      StartDate:'2020-09-15 08:00',
+      EndDate:dateFormat("YYYY-mm-dd HH:MM",new Date()),
       tmpDate:new Date(),
       DatePickerShow:false,
       StartMinDate:new Date("2020-09-15"),
@@ -353,7 +351,6 @@ export default {
     }
   },
   components: {
-    // Filter,
   },
   created(){
   },
@@ -361,33 +358,38 @@ export default {
     // 读取传过来的数据
     try{
       this.dataList = JSON.parse(this.$route.params.dataList)
-      this.Init(this.dataList)
+      this.Init()
       localStorage.setItem("dataList", JSON.stringify(this.dataList));
     }catch{
       Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
       this.dataList = JSON.parse(localStorage.getItem("dataList"));
-      this.Init(this.dataList)
+      this.Init()
     }
   },
   methods:{
+    // 快捷选择池子，时间
     selectGacha(){
       
+    },
+    // 更新祈愿类型选择
+    gachaTypeUpDate(event){
+      // 关闭悬浮框
+      this.showPopoverLeft = false
+      // 刷新数据
+      this.Init()
     },
     UpDateTime(){
       // 起始日期
       if(this.currentPicker){
-        this.StartDate = this.tmpDate
+        this.StartDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
         this.EndMinDate = this.tmpDate
       }else{
-        this.EndDate = this.tmpDate
+        this.EndDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
         this.StartMaxDate = this.tmpDate
       }
       this.DatePickerShow=false
+      this.Init()
       // 筛选数据并重新渲染
-    },
-
-    // 传入起始，终止时间,传入池子list
-    filterData(){
     },
     DatePicker(isStart){
       if(isStart){
@@ -398,8 +400,9 @@ export default {
         this.DatePickerShow=true
       }
     },
-    Init(dataList){
-      var dataList = dataList
+    Init(){
+      var dataList = filterData(this.dataList,this.StartDate,this.EndDate,this.checkboxGroup)
+      // var dataList = dataList
       var ret =  getPieData(dataList)
       this.pieOption.series[0].data = ret.seriesData
       this.rankRateInfo = ret.rankRateInfo
@@ -446,7 +449,7 @@ export default {
           var res = mergeJson(this.dataList,json)
           if(res.res){
             Notify({ type: 'success', message: '合并成功' });
-            this.Init(this.dataList)
+            this.Init()
             localStorage.setItem("dataList", JSON.stringify(this.dataList));
           }else{
             Notify({ type: 'danger', message: '合并失败,可能是哪里出了问题🙁'});

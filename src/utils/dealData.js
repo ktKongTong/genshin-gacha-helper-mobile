@@ -37,7 +37,25 @@ function sortDataById(a, b) {
         }
     }
 }
-
+export function dateFormat(fmt, date) {
+    let ret;
+    const opt = {
+        "Y+": date.getFullYear().toString(),        // 年
+        "m+": (date.getMonth() + 1).toString(),     // 月
+        "d+": date.getDate().toString(),            // 日
+        "H+": date.getHours().toString(),           // 时
+        "M+": date.getMinutes().toString(),         // 分
+        "S+": date.getSeconds().toString()          // 秒
+        // 有其他格式化字符需求可以继续添加，必须转化成字符串
+    };
+    for (let k in opt) {
+        ret = new RegExp("(" + k + ")").exec(fmt);
+        if (ret) {
+            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
+        };
+    };
+    return fmt;
+}
 // 日期格式化
 function formatDate(date) {
     var d = new Date(date),
@@ -144,7 +162,24 @@ export function getGachaCount(dataList){
     }
     return res
 }
-
+function compareDate(TimeA,TimeB){
+    var oDate1 = new Date(TimeA);
+    var oDate2 = new Date(TimeB);
+    if(oDate1.getTime() > oDate2.getTime()){
+        return true; //第一个大
+    } else {
+        return false; //第二个大
+    }
+}
+export function filterData(dataList,startTime,endTime,gachaTypeList){
+    var res = []
+    dataList.forEach(elem=>{
+        if(gachaTypeList.indexOf(elem.gacha_type)>-1 && compareDate(elem.time,startTime) && compareDate(endTime,elem.time)){
+            res.push(elem)
+        }  
+    })
+    return res
+}
 
 // 获取指定rank的List，增加count5/4字段
 export function getRankCountData(dataList){
@@ -362,8 +397,6 @@ export async function fileToJson (file) {
         reader.readAsText(new Blob([file]), 'utf-8') // 按照utf-8编码解析
     })
 }
-export function getBase64(){
-    return "test"
-}
 
-export default{gExcel,gRawJson,fileToJson,getPieData,getRankCountData,getGachaCount,getWordCloudData,getBase64}
+export default{gExcel,gRawJson,fileToJson,getPieData,
+    getRankCountData,getGachaCount,getWordCloudData,filterData,dateFormat}
