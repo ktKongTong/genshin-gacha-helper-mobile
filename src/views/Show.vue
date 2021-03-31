@@ -9,7 +9,7 @@
   </template>
   <!-- 菜单弹出框 -->
   <template #right>
-        <van-popover v-model:show="showPopover" placement="bottom-end">
+    <van-popover v-model:show="showPopover" placement="bottom-end">
         <van-uploader accept='application/json' :after-read="afterRead">
         <van-cell title="合并历史记录(JSON)" />
       </van-uploader>
@@ -30,7 +30,7 @@
 <van-tabs v-model:active="active" swipeable>
   <van-tab title="总览">
   <div>
-    <v-chart autoresize style="height:300px" :option="pieOption"/>
+    <v-chart autoresize style="height:60vh" :option="pieOption"/>
   </div>
   <div>
     <van-collapse :border="false" v-model="activeNames">
@@ -75,18 +75,17 @@
   </van-tab>
   <van-tab title="祈愿次数">
   <div>
-    <v-chart autoresize style="height:300px" :option="heatmapOption"/>
+    <v-chart autoresize style="height:30vh" :option="heatmapOption"/>
   </div>
   <div>
-    <v-chart autoresize style="height:300px" :option="barOption"/>
+    <v-chart autoresize style="height:60vh" :option="barOption"/>
   </div>
   </van-tab>
-  <van-tab title="时间轴">
-<van-empty description="描述文字">
-</van-empty>
-  </van-tab>
   <van-tab title="词云">
- <v-chart style="height: 300px;width: auto;margin: 0 auto"  autoresize :option="wordOption"/>
+  <div>
+ <v-chart style="height:80vh;width: auto;margin: 0 auto"  autoresize :option="wordOption"/>
+  </div>
+ 
   </van-tab>
 </van-tabs>
   <div>
@@ -142,19 +141,20 @@ export default {
                         left: 'center'
                     },
                     tooltip: {
-                        trigger: 'item',
-                        formatter: function (params) {
-                            let str = params.name + "<br />";
-
-                            str=str+"数量:"+params.value
-                            let per = params.percent
-
-                            str = str+"<br/>占比:"+per+"%"
-                            return str;
+                      trigger: 'item',
+                      formatter: function (params) {
+                          let str = params.name + "<br/>";
+                          str=str+"数量:"+params.value
+                          let per = params.percent
+                          str = str+"<br/>占比:"+per+"%"
+                          return str;
                       },
                     },
                     legend: {
-                        top:"5%",
+                        top:"8%",
+                        type: "scroll",
+                        itemGap:6,
+                        itemWidth:14,
                         left: 'center',
                     },
                     color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'],
@@ -164,97 +164,59 @@ export default {
                             type: 'pie',
                             radius: '50%',
                             label:{
-                                formatter: '{b}({c}): {d}%',
-                                color:"#fac858"
+                                // formatter: '{b}({c}): {d}%',
+                                formatter: function (params) {
+                                    let str = params.name + "\n";
+                                    str=str+""+params.value
+                                    let per = params.percent
+                                    str = str+"("+per+"%)"
+                                    return str;
+                                },
+                                // color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'],
                             },
-                            data: "",
+                            top:"15%",
+                            data: "",legendHoverLink: false
                         }
                     ]
       },
       barOption: {
-        tooltip: {
-            trigger: 'axis',
-            axisPointer: {            // 坐标轴指示器，坐标轴触发有效
-                type: 'shadow'        // 默认为直线，可选为：'line' | 'shadow'
-            }
-        },
+        dataZoom: [{type:'slider' },],
+        color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'], 
+        tooltip: {trigger: 'axis',axisPointer: {type: 'shadow'}},
         legend: {
+            itemGap:6,
+            itemWidth:14,
+            left: 'center',
             data: ["3星武器","4星武器","5星武器","4星角色","5星角色"]
         },
-        grid: {
-            left: '3%',
-            right: '4%',
-            bottom: '3%',
-            containLabel: true
-        },
-        xAxis: [
-            {
-                type: 'category',
-                data: ["2012-12-12"]
-            }
-        ],
-        yAxis: [
-            {
-                type: 'value'
-            }
-        ],
+        // grid: {left: '3%',right: '4%',containLabel: true},
+        xAxis: [{type: 'category',data: [" "]}],
+        yAxis: [{type: 'value'}],
         series: [
             {
-                name: '3星武器',
-                type: 'bar',
-                stack:'day',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: []
+              name: '3星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
+              data: [0],legendHoverLink: false
             },{
-                name: '4星武器',
-                type: 'bar',
-                stack:'day',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: []
+                name: '4星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
+                data: [0],legendHoverLink: false
             },{
-                name: '5星武器',
-                type: 'bar',
-                stack:'day',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: []
+                name: '5星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
+                data: [0],legendHoverLink: false
             },{
-                name: '4星角色',
-                type: 'bar',
-                stack:'day',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: []
+                name: '4星角色',type: 'bar',stack:'day',emphasis: {focus: 'series'},
+                data: [0],legendHoverLink: false
             },{
-                name: '5星角色',
-                type: 'bar',
-                stack:'day',
-                emphasis: {
-                    focus: 'series'
-                },
-                data: []
-            },
-        ]
+                name: '5星角色',type: 'bar',stack:'day',emphasis: {focus: 'series'},
+                data: [0],legendHoverLink: false
+            }]
       },
       heatmapOption:{
           title: {
-              top: 30,
               left: 'center',
               text: '祈愿热力图'
           },
-          legend:{
-            top:60,
-            left:"center",
-            orient:"horizontal"
-          },
           tooltip: {
-            formatter:function (params, ticket, callback) {
+            formatter:function (params) {
                 return params.data[0]+" : "+params.data[1]
             }
           },
@@ -262,8 +224,8 @@ export default {
               splitLine:{
                 show:false
               },
-              top: 120,
-              left: 30,
+              top: 50,
+              left: "15%",
               right: 30,
               cellSize: [15, 15],
               range: ['2020-09-25', '2021-03-30'],
@@ -276,13 +238,17 @@ export default {
                 position:"end",
                 nameMap:"cn"
               },
-              yearLabel: {show: true}
+              monthLabel:{fontSize:10},
+              yearLabel: {show: false,}
           },
           visualMap:{
             type:"piecewise",
-            orient: 'horizontal',
-            left: 'center',
-            top: 65,
+            // orient: 'horizontal',
+            itemGap:5,
+            textGap:2,
+            top: 30,    
+            itemWidth:12,
+            itemHeight:12,
             pieces: [
                 {min:50,color:'#134121'},
                 // {min: 50,max:100,color:'#19532B'},
@@ -385,35 +351,41 @@ export default {
       this.barOption.series[4].data=countres.barData.rank5role
       this.heatmapOption.series.data=countres.heatmap.data
       this.heatmapOption.calendar.range=countres.heatmap.range
-      this.setMaskImage(getBase64())
       this.wordOption.series[0].data=getWordCloudData(this.dataList)
-      // console.log(countres)
       this.showPopover=false
     },
-    setMaskImage(bs){
-      var that=this
-      var maskImage = new Image()
-      maskImage.src =bs
-      maskImage.onload = function() {
-        that.wordOption.series[0].maskImage = maskImage
-      }
-    },
+    getImgToBase64(url,callback){
+    var canvas = document.createElement('canvas'),
+      ctx = canvas.getContext('2d'),
+      img = new Image;
+    img.crossOrigin = 'Anonymous';
+    img.onload = function(){
+      canvas.height = img.height;
+      canvas.width = img.width;
+      ctx.drawImage(img,0,0);
+      var dataURL = canvas.toDataURL('image/png');
+      callback(dataURL);
+      canvas = null;
+    };
+    img.src = url;
+  },
+
     // 读取文件之后
     async afterRead(file){
       this.showPopover=false
       try{
           const json=await fileToJson(file.file)
           var res = mergeJson(this.dataList,json)
-            console.log(res.data)
           if(res.res){
             Notify({ type: 'success', message: '合并成功' });
+            this.Init()
+            localStorage.setItem("dataList", JSON.stringify(this.dataList));
           }else{
             Notify({ type: 'danger', message: '合并失败,可能是哪里出了问题🙁'});
           }
       }catch{
           Notify({ type: 'danger', message: '合并失败，可能是哪里出了问题🙁'});
       }
-      
     },
     // 导出Excel
     exportExcel(){
