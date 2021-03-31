@@ -6,8 +6,8 @@
     label=""
     size="large"
     type="textarea"
-    maxlength="2000"
-    placeholder="请填入url"
+    maxlength="3000"
+    placeholder="请填入包含url的字符串"
     show-word-limit
     :border='false'
     label-width='0'
@@ -18,11 +18,24 @@
     />
     <div style="display:flex">
     <van-button style="margin:0 auto" v-on:click="click" :disabled="disabled">获取数据</van-button>
-    <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>       
-    
+    <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>
     </div>
 </div>
-
+<div style="margin:10px;text-align:start">已实现功能如下:</div>
+<van-steps direction="vertical" :active="6">
+  <van-step>
+    <p>饼图,祈愿热力图,条形图,词云</p>
+  </van-step>
+  <van-step>
+    <p>时间/祈愿类型筛选</p>
+  </van-step>
+  <van-step>
+    <p>Excel/JSON文件导出</p>
+  </van-step>
+  <van-step>
+    <p>历史记录合并(使用导出的JSON)</p>
+  </van-step>
+</van-steps>
 <van-notice-bar style="margin-top:20px"
         wrapable
         :scrollable="false"
@@ -34,12 +47,15 @@
         我想表述的是:我使用该接口做的仅仅是转发，没有做任何记录，连阿里云的日志记录都关闭了。
         请自行抉择是否使用该工具"
     />
-
 <van-notice-bar
-        wrapable
-        :scrollable="false"
-        text="部分浏览器(如via/一加)不支持前端直接生成文件，无法导出xlsx文件"
-    />
+    wrapable
+    :scrollable="false"
+    text="部分浏览器不支持以Blob链接格式下载文件，无法导出文件"
+/>
+
+<div style="margin-bottom:10px display:abso">任何想法建议/Bug可到
+<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
+进行反馈</div>
 <van-overlay id="getDataStep" style="align-items:center;display:flex" :show="dialogVisible">
 <div style="align-items:center">
         <div style="background-color:#ffffff;
@@ -57,12 +73,12 @@
 </div>
 </template>
 <style>
-#getDataStep > div > div.van-steps.van-steps--vertical{
-    border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding:0 40px 32px 72px;
-    
-}
+    #getDataStep > div > div.van-steps.van-steps--vertical{
+        border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding:0 40px 32px 72px;
+        
+    }
     #getDataStep > div{
         margin:0 auto;
         align-items:center;
@@ -170,7 +186,7 @@ export default {
                         that.ctn=false
                     }else if(res.status==200&&res.data["message"]=="OK"){
                         if(data.data["list"].length>0){
-                            that.setState(stepState,gacha_type_name+"第"+data.data["page"]+"获取完毕")
+                            that.setState(stepState,gacha_type_name+"第"+data.data["page"]+"页获取完毕")
                             // console.log(gacha_type_name+"第"+data.data["page"]+"获取完毕")
                             if(data.data["list"].length<6){
                                 hasData=false
@@ -199,8 +215,10 @@ export default {
             }
         }
         return dataList
-    }
+    },
+    jump(){
 
+    }
   }
 }
 </script>

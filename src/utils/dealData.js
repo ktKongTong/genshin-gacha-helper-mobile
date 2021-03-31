@@ -1,6 +1,7 @@
 // 数据处理
 import XLSX from "xlsx";
 import {saveAs} from 'file-saver'
+import {dayAdd,compareDate} from './dateUtils'
 var tL=[{"name":"角色活动祈愿","value":"301"},
 {"name":"常驻祈愿","value":"200"},
 {"name":"新手祈愿","value":"100"},
@@ -26,9 +27,8 @@ export function getWordCloudData(dataList){
     }
     return res
 }
-
 // 根据id排序
-function sortDataById(a, b) {
+export function sortDataById(a, b) {
     for(let i=0;i<a.id.length;i++){
         if(parseInt(a.id[i])>parseInt(b.id[i])){
             return -1
@@ -36,42 +36,6 @@ function sortDataById(a, b) {
             return 1
         }
     }
-}
-export function dateFormat(fmt, date) {
-    let ret;
-    const opt = {
-        "Y+": date.getFullYear().toString(),        // 年
-        "m+": (date.getMonth() + 1).toString(),     // 月
-        "d+": date.getDate().toString(),            // 日
-        "H+": date.getHours().toString(),           // 时
-        "M+": date.getMinutes().toString(),         // 分
-        "S+": date.getSeconds().toString()          // 秒
-        // 有其他格式化字符需求可以继续添加，必须转化成字符串
-    };
-    for (let k in opt) {
-        ret = new RegExp("(" + k + ")").exec(fmt);
-        if (ret) {
-            fmt = fmt.replace(ret[1], (ret[1].length == 1) ? (opt[k]) : (opt[k].padStart(ret[1].length, "0")))
-        };
-    };
-    return fmt;
-}
-// 日期格式化
-function formatDate(date) {
-    var d = new Date(date),
-      month = '' + (d.getMonth() + 1),
-      day = '' + d.getDate(),
-      year = d.getFullYear();   
-    if (month.length < 2) month = '0' + month;
-    if (day.length < 2) day = '0' + day;
-    return [year, month, day].join('-');
-}
-
-// 字符串日期加1
-function dayAdd(date){
-    var d = new Date(date)
-    var dt = new Date(Number(d)+(24*60*60*1000))
-    return formatDate(Number(dt))
 }
 // 获取抽卡次数
 export function getGachaCount(dataList){
@@ -162,15 +126,7 @@ export function getGachaCount(dataList){
     }
     return res
 }
-function compareDate(TimeA,TimeB){
-    var oDate1 = new Date(TimeA);
-    var oDate2 = new Date(TimeB);
-    if(oDate1.getTime() > oDate2.getTime()){
-        return true; //第一个大
-    } else {
-        return false; //第二个大
-    }
-}
+
 export function filterData(dataList,startTime,endTime,gachaTypeList){
     var res = []
     dataList.forEach(elem=>{
@@ -299,6 +255,10 @@ export function mergeJson(dataList,json){
     let  res = dataList.sort(sortDataById)
     // 最早的一个Id
     let firstData = res[res.length-1]
+    // 空List合并所有
+    if(res.length==0){
+        firstData = {id:"200000000000000000"}
+    }
     // 导出json数据格式
     try{
         json.gachaType.forEach(item=>{
@@ -316,7 +276,6 @@ export function mergeJson(dataList,json){
     }
     return {data:dataList.sort(sortDataById),res:true}
 }
-
 // 传入DataList生成json文件，方便合并数据
 export function gRawJson(dataList){
     let  res = dataList.sort(sortDataById)
@@ -398,5 +357,5 @@ export async function fileToJson (file) {
     })
 }
 
-export default{gExcel,gRawJson,fileToJson,getPieData,
-    getRankCountData,getGachaCount,getWordCloudData,filterData,dateFormat}
+export default{gExcel,gRawJson,fileToJson,getPieData,sortDataById,
+    getRankCountData,getGachaCount,getWordCloudData,filterData}
