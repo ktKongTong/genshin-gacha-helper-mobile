@@ -7,7 +7,6 @@ import { use } from "echarts/core";
 import 'echarts-wordcloud'
 import Vant,{Uploader, Tab, Tabs, Sidebar, SidebarItem,
   Tabbar,TabbarItem,NavBar,Icon,Popover,Cell, CellGroup,Rate,Collapse,CollapseItem } from 'vant';
-
 import 'vant/lib/index.css';
 
 // 手动引入 ECharts 各模块来减小打包体积
@@ -24,8 +23,10 @@ import {
   GridComponent,
   TooltipComponent,
   TitleComponent,
+  DataZoomComponent,
+  DataZoomSliderComponent,
   CalendarComponent,
-  VisualMapComponent
+  VisualMapComponent,
 } from 'echarts/components'
 use([
   CanvasRenderer,
@@ -35,6 +36,8 @@ use([
   LegendComponent,
   GridComponent,
   TooltipComponent,
+  // DataZoomComponent,
+  DataZoomSliderComponent,
   TitleComponent,
   CalendarComponent,
   VisualMapComponent
@@ -47,6 +50,5 @@ app.use(Cell).use(CellGroup)
 app.use(Tabbar).use(TabbarItem);
 app.use(Tab).use(Tabs);
 app.use(Sidebar).use(SidebarItem);
-
 app.component('v-chart', ECharts)
 app.mount('#app')

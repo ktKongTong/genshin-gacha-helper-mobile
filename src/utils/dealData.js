@@ -128,8 +128,6 @@ export function getGachaCount(dataList){
     })
     // 四个List
     // 一点，空日期需不需要统计
-    // console.log(serieslist)
-    // console.log(heatmap)
     var res = {
         "barData":{
             "rank3weapon":serieslist["3星武器"],
@@ -364,9 +362,6 @@ export async function fileToJson (file) {
         reader.readAsText(new Blob([file]), 'utf-8') // 按照utf-8编码解析
     })
 }
-
-
-
 export function getBase64(){
     return "test"
 }
