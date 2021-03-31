@@ -5,7 +5,7 @@ import store from './store'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
 import 'echarts-wordcloud'
-import Vant,{Uploader, Tab, Tabs, Sidebar, SidebarItem,
+import Vant,{Uploader, Tab, Tabs, Sidebar, SidebarItem,Popup,
   Tabbar,TabbarItem,NavBar,Icon,Popover,Cell, CellGroup,Rate,Collapse,CollapseItem } from 'vant';
 import 'vant/lib/index.css';
 
@@ -23,7 +23,6 @@ import {
   GridComponent,
   TooltipComponent,
   TitleComponent,
-  DataZoomComponent,
   DataZoomSliderComponent,
   CalendarComponent,
   VisualMapComponent,
@@ -36,7 +35,6 @@ use([
   LegendComponent,
   GridComponent,
   TooltipComponent,
-  // DataZoomComponent,
   DataZoomSliderComponent,
   TitleComponent,
   CalendarComponent,
@@ -44,7 +42,7 @@ use([
 ]);
 
 const app = createApp(App).use(store).use(router).use(Vant).use(Uploader)
-app.use(NavBar).use(Icon).use(Popover).use(Rate)
+app.use(NavBar).use(Icon).use(Popover).use(Rate).use(Popup)
 app.use(Collapse).use(CollapseItem)
 app.use(Cell).use(CellGroup)
 app.use(Tabbar).use(TabbarItem);

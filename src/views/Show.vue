@@ -5,7 +5,31 @@
 <van-nav-bar title="" fixed left-text="筛选" :border='false' :placeholder='true'>
   <!-- 筛选 -->
   <template #left>
-    <van-icon class-prefix="iconfont icon-shaixuan" name="extra"></van-icon>
+    <van-popover v-model:show="showPopoverLeft" placement="bottom-start">
+      <div>
+        <van-checkbox-group v-model="checkboxGroup">
+          <van-checkbox v-for="name in names" :name="name['value']" :key="name['value']">{{name["name"]}}</van-checkbox>
+        </van-checkbox-group>
+      </div>
+      <template #reference>
+        <van-icon class-prefix="iconfont icon-shaixuan" name="extra"></van-icon>
+      </template>
+    </van-popover>
+  </template>
+  <template #title>
+    <div style="display:flex" >
+      <van-field v-model="StartDate" class='dateInput' style="margin:0 auto" label-width='0' placeholder="起始日期" disabled v-on:click="DatePicker(true)"/>
+    <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha"><span style="font-size:12px"> 快捷选择</span></div>
+      <van-field v-model="EndDate" class='dateInput'  style="margin:0 auto"  label-width='0' placeholder="结束日期" disabled v-on:click="DatePicker(false)" />
+    </div>
+    <van-popup v-model:show="DatePickerShow" :closeable="false" position="bottom" round :style="{ height: '400px' }">
+    <div style="line-height:2;margin-top:15px;display:flex;width:100vw">
+      <span style="margin:0 auto">{{currentPicker?'起始日期':'截止日期'}}</span>
+      <span style="margin-right:30px;margin-left:auto;color:#0000ff" v-on:click="UpDateTime">确认</span>      
+    </div>
+      <van-datetime-picker v-model="tmpDate" type="datetime" :min-date="currentPicker?StartMinDate:EndMinDate" :max-date="currentPicker?StartMaxDate:EndMaxDate">
+      <template #default></template></van-datetime-picker>
+    </van-popup>
   </template>
   <!-- 菜单弹出框 -->
   <template #right>
@@ -17,8 +41,7 @@
       <!-- JSON/Excel导出 -->
       <van-cell title="JSON  记录导出"  v-on:click="exportJson"/>
       <van-cell title="Excel 记录导出"  v-on:click="exportExcel"/>
-      <van-cell title="渲染"  v-on:click="Init"/>
-      <!-- 跳转分析结缘 -->
+      <!-- 跳转分析祈愿 -->
       <van-cell title="祈愿记录分析工具" arrow-direction='test' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
       <template #reference>
@@ -88,28 +111,31 @@
  
   </van-tab>
 </van-tabs>
-  <div>
+    <div>
     <!-- 筛选弹出框 -->
-    <van-popup
-      :v-model:show="show"
-      round
-      position="bottom"
-      :style="{ height: '70%' }"
-      closeable
-      close-icon="close" safe-area-inset-bottom
-    >
-      <Filter/>
+    <van-popup v-model:show="filterShow"
+    :style="{width:'50vw',height:'100%'}"
+    position="left">
+    <!-- <Filter/> -->
     </van-popup>
-
   </div>
+
+
+
 </div>
 
 </template>
+<style>
+/* 日期选择居中 */
+    .dateInput > div > div > input{
+      text-align: center !important;
+    }
+</style>
 <script>
 import { ref } from 'vue';
 import '../assets/iconfont.css'
 import { Notify,Toast,Tab, Tabs,Tabbar,TabbarItem } from 'vant';
-import Filter from '../components/Filter.vue'
+// import Filter from '../components/Filter.vue'
 import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,getRankCountData,getGachaCount,getWordCloudData,getBase64} from '../utils/dealData.js'
 
 export default {
@@ -118,6 +144,19 @@ export default {
   },
   data() {
     return {
+      showPopoverLeft:false,
+      checkboxGroup: ["100","200","301","302"],
+      names: [{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}],
+      currentPicker:true,
+      StartDate:'2020-09-15',
+      EndDate:"2021-03-30",
+      tmpDate:new Date(),
+      DatePickerShow:false,
+      StartMinDate:new Date("2020-09-15"),
+      StartMaxDate:new Date(),
+      EndMinDate:new Date("2020-09-15"),
+      EndMaxDate:new Date(),
+      filterShow:false,
       activeNames:["5"],
       rate:[5,4,3],
       showPopover:false,
@@ -314,7 +353,7 @@ export default {
     }
   },
   components: {
-    Filter,
+    // Filter,
   },
   created(){
   },
@@ -322,27 +361,56 @@ export default {
     // 读取传过来的数据
     try{
       this.dataList = JSON.parse(this.$route.params.dataList)
-      this.Init()
+      this.Init(this.dataList)
       localStorage.setItem("dataList", JSON.stringify(this.dataList));
     }catch{
       Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
       this.dataList = JSON.parse(localStorage.getItem("dataList"));
-      this.Init()
+      this.Init(this.dataList)
     }
   },
   methods:{
-    Init(){
-      var ret =  getPieData(this.dataList)
+    selectGacha(){
+      
+    },
+    UpDateTime(){
+      // 起始日期
+      if(this.currentPicker){
+        this.StartDate = this.tmpDate
+        this.EndMinDate = this.tmpDate
+      }else{
+        this.EndDate = this.tmpDate
+        this.StartMaxDate = this.tmpDate
+      }
+      this.DatePickerShow=false
+      // 筛选数据并重新渲染
+    },
+
+    // 传入起始，终止时间,传入池子list
+    filterData(){
+    },
+    DatePicker(isStart){
+      if(isStart){
+        this.currentPicker=true
+        this.DatePickerShow=true
+      }else{
+        this.currentPicker=false
+        this.DatePickerShow=true
+      }
+    },
+    Init(dataList){
+      var dataList = dataList
+      var ret =  getPieData(dataList)
       this.pieOption.series[0].data = ret.seriesData
       this.rankRateInfo = ret.rankRateInfo
-      var res = getRankCountData(this.dataList)
+      var res = getRankCountData(dataList)
       this.rank5RoleList = res.rank5RoleList
       this.rank5WeaponList = res.rank5WeaponList
       this.rank4RoleList = res.rank4RoleList
       this.rank4WeaponList = res.rank4WeaponList
       this.rank5Avg = res.rank5Avg
       this.rank4Avg = res.rank4Avg
-      var countres = getGachaCount(this.dataList)
+      var countres = getGachaCount(dataList)
       this.barOption.xAxis[0].data=countres.barData.index
       this.barOption.series[0].data=countres.barData.rank3weapon
       this.barOption.series[1].data=countres.barData.rank4weapon
@@ -351,7 +419,7 @@ export default {
       this.barOption.series[4].data=countres.barData.rank5role
       this.heatmapOption.series.data=countres.heatmap.data
       this.heatmapOption.calendar.range=countres.heatmap.range
-      this.wordOption.series[0].data=getWordCloudData(this.dataList)
+      this.wordOption.series[0].data=getWordCloudData(dataList)
       this.showPopover=false
     },
     getImgToBase64(url,callback){
@@ -378,7 +446,7 @@ export default {
           var res = mergeJson(this.dataList,json)
           if(res.res){
             Notify({ type: 'success', message: '合并成功' });
-            this.Init()
+            this.Init(this.dataList)
             localStorage.setItem("dataList", JSON.stringify(this.dataList));
           }else{
             Notify({ type: 'danger', message: '合并失败,可能是哪里出了问题🙁'});
