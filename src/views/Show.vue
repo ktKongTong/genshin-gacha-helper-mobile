@@ -116,9 +116,9 @@
   </van-tab>
 </van-tabs>
 <van-divider/>
-<div style="margin-bottom:10px">任何想法建议/Bug可到
-  <van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
-  进行反馈</div>
+<div style="margin-bottom:10px;margin-top:10px;font-size:12px">任何想法建议/Bug可到
+<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
+进行反馈</div>
 </div>
 
 </template>
@@ -328,6 +328,36 @@ export default {
         data: []
         }]
       },
+      // 氪金大佬/欧皇 多五星专供出货次数分布
+      line5Option:{
+          xAxis: {
+              type: 'category',
+              data: Array.from(new Array(91).keys()).slice(1)
+          },
+          yAxis: {
+              type: 'value'
+          },
+          series: [{
+              data: [],
+              type: 'line',
+              smooth: true
+          }]
+      },
+      // 四星出货次数分布
+      line4Option:{
+          xAxis: {
+              type: 'category',
+              data: Array.from(new Array(11).keys()).slice(1)
+          },
+          yAxis: {
+              type: 'value'
+          },
+          series: [{
+              data: [],
+              type: 'line',
+              smooth: true
+          }]
+      },
     }
   },
   components: {
@@ -371,6 +401,7 @@ export default {
       }
       this.Init()
     }
+    console.log(this.line5Option)
   },
   methods:{
         // 刷新数据,自动筛选
@@ -380,7 +411,8 @@ export default {
       var ret =  getPieData(dataList)
       this.pieOption.series[0].data = ret.seriesData
       this.rankRateInfo = ret.rankRateInfo
-      var res = getRankCountData(dataList)
+      // 这个不能使用filter，数据会出错，应该先计算再筛选
+      var res = getRankCountData(this.dataList,this.StartDate,this.EndDate,this.checkboxGroup)
       this.rank5RoleList = res.rank5RoleList
       this.rank5WeaponList = res.rank5WeaponList
       this.rank4RoleList = res.rank4RoleList

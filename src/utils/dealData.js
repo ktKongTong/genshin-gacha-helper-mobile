@@ -138,7 +138,7 @@ export function filterData(dataList,startTime,endTime,gachaTypeList){
 }
 
 // 获取指定rank的List，增加count5/4字段
-export function getRankCountData(dataList){
+export function getRankCountData(dataList,startTime,endTime,gachaTypeList){
     var data = dataList.sort(sortDataById).reverse()
     var rank5RoleList = {"all":[],"100":[],"200":[],"301":[],"302":[]}
     var rank5WeaponList = {"all":[],"100":[],"200":[],"301":[],"302":[]}
@@ -152,14 +152,17 @@ export function getRankCountData(dataList){
         switch (true){
             case elem.rank_type=="5":
                 elem.count5=rank5Count[elem.gacha_type]
-                rank5CountSum["all"]+=rank5Count[elem.gacha_type]
-                rank5CountSum[elem.gacha_type]+=rank5Count[elem.gacha_type]
-                if(elem.item_type=="角色"){
-                    rank5RoleList[elem.gacha_type].push(elem)
-                    rank5RoleList["all"].push(elem)
-                }else{
-                    rank5WeaponList[elem.gacha_type].push(elem)
-                    rank5WeaponList["all"].push(elem)
+                // 筛选
+                if(gachaTypeList.indexOf(elem.gacha_type)>-1 && compareDate(elem.time,startTime) && compareDate(endTime,elem.time)){
+                    rank5CountSum["all"]+=rank5Count[elem.gacha_type]
+                    rank5CountSum[elem.gacha_type]+=rank5Count[elem.gacha_type]
+                    if(elem.item_type=="角色"){
+                        rank5RoleList[elem.gacha_type].push(elem)
+                        rank5RoleList["all"].push(elem)
+                    }else{
+                        rank5WeaponList[elem.gacha_type].push(elem)
+                        rank5WeaponList["all"].push(elem)
+                    }
                 }
                 rank5Count["all"]=1
                 rank4Count["all"]=1
@@ -168,15 +171,16 @@ export function getRankCountData(dataList){
                 break
             case elem.rank_type=="4":
                 elem.count4=rank4Count[elem.gacha_type]
-                rank4CountSum["all"]+=rank4Count[elem.gacha_type]
-                rank4CountSum[elem.gacha_type]+=rank4Count[elem.gacha_type]
-                if(elem.item_type=="角色"){
-                    rank4RoleList[elem.gacha_type].push(elem)
-                    rank4RoleList["all"].push(elem)
-                }else{
-                    rank4WeaponList[elem.gacha_type].push(elem)
-                    rank4WeaponList["all"].push(elem)
-                    
+                if(gachaTypeList.indexOf(elem.gacha_type)>-1 && compareDate(elem.time,startTime) && compareDate(endTime,elem.time)){
+                    rank4CountSum["all"]+=rank4Count[elem.gacha_type]
+                    rank4CountSum[elem.gacha_type]+=rank4Count[elem.gacha_type]
+                    if(elem.item_type=="角色"){
+                        rank4RoleList[elem.gacha_type].push(elem)
+                        rank4RoleList["all"].push(elem)
+                    }else{
+                        rank4WeaponList[elem.gacha_type].push(elem)
+                        rank4WeaponList["all"].push(elem)
+                    }
                 }
                 rank5Count[elem.gacha_type]++
                 rank5Count["all"]++
@@ -195,6 +199,7 @@ export function getRankCountData(dataList){
     var rank5Avg = {"all":0,"100":0,"200":0,"301":0,"302":0}
     var typeList = ["all","100","200","301","302"]
     typeList.forEach(elem=>{
+        // avg需要先筛选
         if(rank5WeaponList[elem].concat(rank5RoleList[elem]).length>0){
             rank5Avg[elem] = (rank5CountSum[elem]/rank5WeaponList[elem].concat(rank5RoleList[elem]).length).toFixed(2)
         }
@@ -208,7 +213,9 @@ export function getRankCountData(dataList){
         rank4WeaponList:rank4WeaponList,
         rank4RoleList:rank4RoleList,
         rank5Avg:rank5Avg,
-        rank4Avg:rank4Avg
+        rank4Avg:rank4Avg,
+        rank5Count:rank5Count,
+        
     }
     return res
 }

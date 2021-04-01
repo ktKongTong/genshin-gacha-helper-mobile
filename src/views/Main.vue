@@ -21,39 +21,22 @@
     <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>
     </div>
 </div>
-<div style="margin:10px;text-align:start">已实现功能如下:</div>
-<van-steps direction="vertical" :active="6">
-  <van-step>
-    <p>饼图,祈愿热力图,条形图,词云</p>
-  </van-step>
-  <van-step>
-    <p>时间/祈愿类型筛选</p>
-  </van-step>
-  <van-step>
-    <p>Excel/JSON文件导出</p>
-  </van-step>
-  <van-step>
-    <p>历史记录合并(使用导出的JSON)</p>
-  </van-step>
-</van-steps>
-<van-notice-bar style="margin-top:20px"
+<van-notice-bar style="margin-top:20px;text-align:start"
         wrapable
         :scrollable="false"
         text="重要!
-        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求。
-        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发
-        在响应的时候告诉浏览器表示允许非同源请求。
+        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求的。
+        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发,在响应的时候告诉浏览器表示允许非同源请求。
         我可以使用该封装接口做到记录使用者的一些信息，如可能包含敏感信息的authkey或是你的祈愿记录;
-        我想表述的是:我使用该接口做的仅仅是转发，没有做任何记录，连阿里云的日志记录都关闭了。
+        我实际做的:该函数仅仅是转发，没有做任何记录，阿里云的日志记录也已关闭。
         请自行抉择是否使用该工具"
     />
-<van-notice-bar
+<van-notice-bar style="text-align:start"
     wrapable
     :scrollable="false"
     text="部分浏览器不支持以Blob链接格式下载文件，无法导出文件"
 />
-
-<div style="margin-bottom:10px display:abso">任何想法建议/Bug可到
+<div style="margin-bottom:10px;margin-top:10px;font-size:12px">任何想法建议/Bug可到
 <van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
 进行反馈</div>
 <van-overlay id="getDataStep" style="align-items:center;display:flex" :show="dialogVisible">
@@ -216,9 +199,10 @@ export default {
         }
         return dataList
     },
+    // 跳转GithubIssue
     jump(){
-
-    }
+        window.location.href='https://github.com/ktKongTong/genshin-gacha-helper-mobile/issues'
+    },
   }
 }
 </script>
