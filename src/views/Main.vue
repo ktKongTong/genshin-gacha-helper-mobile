@@ -6,8 +6,8 @@
     label=""
     size="large"
     type="textarea"
-    maxlength="2000"
-    placeholder="请填入url"
+    maxlength="3000"
+    placeholder="请填入包含url的字符串"
     show-word-limit
     :border='false'
     label-width='0'
@@ -18,27 +18,27 @@
     />
     <div style="display:flex">
     <van-button style="margin:0 auto" v-on:click="click" :disabled="disabled">获取数据</van-button>
-    <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>       
-    
+    <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>
     </div>
 </div>
-<van-notice-bar style="margin-top:20px"
+<van-notice-bar style="margin-top:20px;text-align:start"
         wrapable
         :scrollable="false"
         text="重要!
-        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求。
-        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发
-        在响应的时候告诉浏览器表示允许非同源请求。
+        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求的。
+        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发,在响应的时候告诉浏览器表示允许非同源请求。
         我可以使用该封装接口做到记录使用者的一些信息，如可能包含敏感信息的authkey或是你的祈愿记录;
-        我想表述的是:我使用该接口做的仅仅是转发，没有做任何记录，连阿里云的日志记录都关闭了。
+        我实际做的:该函数仅仅是转发，没有做任何记录，阿里云的日志记录也已关闭。
         请自行抉择是否使用该工具"
     />
-
-<van-notice-bar
-        wrapable
-        :scrollable="false"
-        text="部分浏览器(如via/一加)不支持前端直接生成文件，无法导出xlsx文件"
-    />
+<van-notice-bar style="text-align:start"
+    wrapable
+    :scrollable="false"
+    text="部分浏览器不支持以Blob链接格式下载文件，无法导出文件"
+/>
+<div style="margin-bottom:10px;margin-top:10px;font-size:12px">任何想法建议/Bug可到
+<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
+进行反馈</div>
 <van-overlay id="getDataStep" style="align-items:center;display:flex" :show="dialogVisible">
 <div style="align-items:center">
         <div style="background-color:#ffffff;
@@ -56,12 +56,12 @@
 </div>
 </template>
 <style>
-#getDataStep > div > div.van-steps.van-steps--vertical{
-    border-bottom-left-radius: 10px;
-        border-bottom-right-radius: 10px;
-        padding:0 40px 32px 72px;
-    
-}
+    #getDataStep > div > div.van-steps.van-steps--vertical{
+        border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding:0 40px 32px 72px;
+        
+    }
     #getDataStep > div{
         margin:0 auto;
         align-items:center;
@@ -91,7 +91,9 @@ export default {
   components: {
   },
   methods:{
+        
     tips(){
+
         Dialog.alert({
         title: 'url获取方式',
         message: "1.进入祈愿历史记录界面\n2.关闭网络\n3. 历史记录右上角刷新\n 4. 复制包含url的文字即可",
@@ -167,7 +169,7 @@ export default {
                         that.ctn=false
                     }else if(res.status==200&&res.data["message"]=="OK"){
                         if(data.data["list"].length>0){
-                            that.setState(stepState,gacha_type_name+"第"+data.data["page"]+"获取完毕")
+                            that.setState(stepState,gacha_type_name+"第"+data.data["page"]+"页获取完毕")
                             // console.log(gacha_type_name+"第"+data.data["page"]+"获取完毕")
                             if(data.data["list"].length<6){
                                 hasData=false
@@ -196,8 +198,11 @@ export default {
             }
         }
         return dataList
-    }
-
+    },
+    // 跳转GithubIssue
+    jump(){
+        window.location.href='https://github.com/ktKongTong/genshin-gacha-helper-mobile/issues'
+    },
   }
 }
 </script>

@@ -224,7 +224,7 @@ csstype@^2.6.8:
 
 echarts-wordcloud@^2.0.0:
   version "2.0.0"
-  resolved "https://registry.npm.taobao.org/echarts-wordcloud/download/echarts-wordcloud-2.0.0.tgz?cache=0&sync_timestamp=1610777395203&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fecharts-wordcloud%2Fdownload%2Fecharts-wordcloud-2.0.0.tgz#52ef817895801ffe9e99dd1bacab7686b2dec04a"
+  resolved "https://registry.npm.taobao.org/echarts-wordcloud/download/echarts-wordcloud-2.0.0.tgz?cache=0&sync_timestamp=1610777507090&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fecharts-wordcloud%2Fdownload%2Fecharts-wordcloud-2.0.0.tgz#52ef817895801ffe9e99dd1bacab7686b2dec04a"
   integrity sha1-Uu+BeJWAH/6emd0brKt2hrLewEo=
 
 echarts@^5.0.2:
@@ -259,6 +259,11 @@ fflate@^0.3.8:
   version "0.3.11"
   resolved "https://registry.npm.taobao.org/fflate/download/fflate-0.3.11.tgz#2c440d7180fdeb819e64898d8858af327b042a5d"
   integrity sha1-LEQNcYD964GeZImNiFivMnsEKl0=
+
+file-saver@^2.0.5:
+  version "2.0.5"
+  resolved "https://registry.npm.taobao.org/file-saver/download/file-saver-2.0.5.tgz#d61cfe2ce059f414d899e9dd6d4107ee25670c38"
+  integrity sha1-1hz+LOBZ9BTYmendbUEH7iVnDDg=
 
 follow-redirects@^1.10.0:
   version "1.13.3"

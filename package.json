@@ -10,6 +10,7 @@
     "axios": "^0.21.1",
     "echarts": "^5.0.2",
     "echarts-wordcloud": "^2.0.0",
+    "file-saver": "^2.0.5",
     "vant": "^3.0.10",
     "vue": "^3.0.5",
     "vue-echarts": "^6.0.0-rc.3",

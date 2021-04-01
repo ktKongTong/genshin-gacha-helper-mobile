@@ -4,7 +4,8 @@ import router from './router'
 import store from './store'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
-import Vant from 'vant';
+import 'echarts-wordcloud'
+import Vant,{Uploader, Tab, Tabs,Rate,Collapse,CollapseItem,Cell, CellGroup,Popup, Icon, Popover } from 'vant';
 import 'vant/lib/index.css';
 
 // 手动引入 ECharts 各模块来减小打包体积
@@ -12,19 +13,37 @@ import {
   CanvasRenderer
 } from 'echarts/renderers'
 import {
-  BarChart
+  BarChart,PieChart,HeatmapChart,LineChart
 } from 'echarts/charts'
 import {
+  LegendComponent,
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  TitleComponent,
+  DataZoomSliderComponent,
+  CalendarComponent,
+  VisualMapComponent,
 } from 'echarts/components'
 use([
   CanvasRenderer,
-  BarChart,
+  PieChart,BarChart,HeatmapChart,LineChart,
+  LegendComponent,
   GridComponent,
-  TooltipComponent
+  TooltipComponent,
+  DataZoomSliderComponent,
+  TitleComponent,
+  CalendarComponent,
+  VisualMapComponent
 ]);
 
-const app = createApp(App).use(store).use(router).use(Vant);
+const app = createApp(App).use(store).use(router)
+
+app.use(Vant).use(Icon).use(Popover).use(Rate).use(Popup).use(Uploader)
+// 折叠面板
+app.use(Collapse).use(CollapseItem)
+// 单元格
+app.use(Cell).use(CellGroup)
+// tab栏
+app.use(Tab).use(Tabs);
 app.component('v-chart', ECharts)
 app.mount('#app')
