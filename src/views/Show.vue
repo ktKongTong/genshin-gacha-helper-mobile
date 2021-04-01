@@ -4,7 +4,7 @@
 <!-- 顶部自定义导航 -->
 <div style="width:100%;">
   <div style="display:flex; align-items:center" class="topNav">
-    <div style="width:7vw;height:100%">
+    <div style="width:12vw;height:100%">
       <van-popover  v-model:show="showPopoverLeft" placement="bottom-start">
         <div style="margin:20px 20px 10px 20px;">
           <van-checkbox-group v-model="checkboxGroup">
@@ -21,9 +21,9 @@
     </div>
     <div style="display:flex" >
       <van-field v-model="StartDate" class='dateInput' style="margin:0 auto" label-width='0' placeholder="起始日期" disabled v-on:click="DatePicker(true)"/>
-      <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha">
+      <!-- <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha"> -->
       <!-- <span style="font-size:12px"> 快捷选择</span> -->
-      </div>
+      <!-- </div> -->
       <van-field v-model="EndDate" class='dateInput'  style="margin:0 auto"  label-width='0' placeholder="结束日期" disabled v-on:click="DatePicker(false)" />
       <van-popup v-model:show="DatePickerShow" :closeable="false" position="bottom" round :style="{ height: '400px' }">
         <div style="line-height:2;margin-top:15px;display:flex;width:100vw">
@@ -34,7 +34,7 @@
         <template #default></template></van-datetime-picker>
       </van-popup>
     </div>
-    <div style="width:7vw">
+    <div style="width:12vw">
     <van-popover v-model:show="showPopoverRight" placement="bottom-end">
         <van-uploader accept='application/json' :after-read="afterRead">
         <van-cell title="合并历史记录(JSON)" />
@@ -99,6 +99,19 @@
           </van-collapse-item>
       </van-collapse>
       </div>
+    </div>
+  </van-tab>
+  <van-tab  title="出货次数">
+    <div>
+      <v-chart autoresize style="height:60vh" :option="line4Option"/>
+    </div>
+    <van-cell center title="显示五星出货次数图">
+      <template #right-icon>
+        <van-switch v-model="show5LineCharts" size="16" />
+      </template>
+    </van-cell>
+    <div :style="show5LineCharts?'':'display:none'">
+      <v-chart  autoresize  style="height:60vh;" :option="line5Option"/>
     </div>
   </van-tab>
   <van-tab title="祈愿次数">
@@ -190,6 +203,7 @@ export default {
         // 不同星级比率
         rank5Rate:0,rank4Rate:0,rank3Rate:0
       },
+      show5LineCharts:false,
       // 饼图配置项
       pieOption:{
         title: {text: '祈愿总览',left: 'center'},
@@ -330,33 +344,31 @@ export default {
       },
       // 氪金大佬/欧皇 多五星专供出货次数分布
       line5Option:{
-          xAxis: {
-              type: 'category',
-              data: Array.from(new Array(91).keys()).slice(1)
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series: [{
-              data: [],
-              type: 'line',
-              smooth: true
-          }]
+          grid:{top:"20%"},
+          title:{left: 'center',text: '五星出货频次图'},
+          xAxis: {type: 'category',data: Array.from(new Array(91).keys()).slice(1)},
+          legend: {itemGap:6,itemWidth:14,left: 'center',top:"8%",
+            data: ["所有","新手祈愿","常驻祈愿","角色活动祈愿","武器活动祈愿"]},
+          yAxis: {type: 'value'},
+          series: [{name:"所有",data: [],type: 'line',smooth: true},
+          {name:"新手祈愿", data: [],type: 'line', smooth: true},
+          {name:"常驻祈愿",data: [],type: 'line',smooth: true},
+          {name:"角色活动祈愿",data: [],type: 'line',smooth: true},
+          {name:"武器活动祈愿",data: [],type: 'line',smooth: true}]
       },
       // 四星出货次数分布
       line4Option:{
-          xAxis: {
-              type: 'category',
-              data: Array.from(new Array(11).keys()).slice(1)
-          },
-          yAxis: {
-              type: 'value'
-          },
-          series: [{
-              data: [],
-              type: 'line',
-              smooth: true
-          }]
+          grid:{top:"20%"},
+          title:{left: 'center',text: '四星出货频次图'},
+          xAxis: {type: 'category',data: Array.from(new Array(11).keys()).slice(1)},
+          legend: {itemGap:6,itemWidth:14,left: 'center',top:"8%",
+            data: ["所有","新手祈愿","常驻祈愿","角色活动祈愿","武器活动祈愿"]},
+          yAxis: {type: 'value'},
+          series: [{name:"所有",data: [],type: 'line',smooth: true},
+          {name:"新手祈愿", data: [],type: 'line', smooth: true},
+          {name:"常驻祈愿",data: [],type: 'line',smooth: true},
+          {name:"角色活动祈愿",data: [],type: 'line',smooth: true},
+          {name:"武器活动祈愿",data: [],type: 'line',smooth: true}]
       },
     }
   },
@@ -404,7 +416,7 @@ export default {
     console.log(this.line5Option)
   },
   methods:{
-        // 刷新数据,自动筛选
+    // 刷新数据,自动筛选
     Init(){
       var dataList = filterData(this.dataList,this.StartDate,this.EndDate,this.checkboxGroup)
       // 饼图
@@ -419,6 +431,17 @@ export default {
       this.rank4WeaponList = res.rank4WeaponList
       this.rank5Avg = res.rank5Avg
       this.rank4Avg = res.rank4Avg
+      // 祈愿频次/与饼图一同计算
+      this.line5Option.series[0].data = res.line5Count["all"]
+      this.line5Option.series[1].data = res.line5Count["100"]
+      this.line5Option.series[2].data = res.line5Count["200"]
+      this.line5Option.series[3].data = res.line5Count["301"]
+      this.line5Option.series[4].data = res.line5Count["302"]
+      this.line4Option.series[0].data = res.line4Count["all"]
+      this.line4Option.series[1].data = res.line4Count["100"]
+      this.line4Option.series[2].data = res.line4Count["200"]
+      this.line4Option.series[3].data = res.line4Count["301"]
+      this.line4Option.series[4].data = res.line4Count["302"]
       // 祈愿次数
       var countres = getGachaCount(dataList)
       this.barOption.xAxis[0].data=countres.barData.index
@@ -431,7 +454,6 @@ export default {
       this.heatmapOption.calendar.range=countres.heatmap.range
       // 词云
       this.wordOption.series[0].data=getWordCloudData(dataList)
-      // this.showPopoverRight=false
     },
     // 快捷选择池子，时间
     selectGacha(){

@@ -126,7 +126,7 @@ export function getGachaCount(dataList){
     }
     return res
 }
-
+// 数据筛选
 export function filterData(dataList,startTime,endTime,gachaTypeList){
     var res = []
     dataList.forEach(elem=>{
@@ -148,6 +148,8 @@ export function getRankCountData(dataList,startTime,endTime,gachaTypeList){
     var rank4CountSum = {"all":0,"100":0,"200":0,"301":0,"302":0}
     var rank5Count = {"all":1,"100":1,"200":1,"301":1,"302":1}
     var rank4Count = {"all":1,"100":1,"200":1,"301":1,"302":1}
+    var line5Count = {"all":new Array(90).fill(0),"100":new Array(90).fill(0),"200":new Array(90).fill(0),"301":new Array(90).fill(0),"302":new Array(90).fill(0)}
+    var line4Count = {"all":new Array(10).fill(0),"100":new Array(10).fill(0),"200":new Array(10).fill(0),"301":new Array(10).fill(0),"302":new Array(10).fill(0)}
     data.forEach(elem=>{
         switch (true){
             case elem.rank_type=="5":
@@ -163,6 +165,8 @@ export function getRankCountData(dataList,startTime,endTime,gachaTypeList){
                         rank5WeaponList[elem.gacha_type].push(elem)
                         rank5WeaponList["all"].push(elem)
                     }
+                    line5Count["all"][elem.count5-1]++
+                    line5Count[elem.gacha_type][elem.count5-1]++
                 }
                 rank5Count["all"]=1
                 rank4Count["all"]=1
@@ -181,6 +185,8 @@ export function getRankCountData(dataList,startTime,endTime,gachaTypeList){
                         rank4WeaponList[elem.gacha_type].push(elem)
                         rank4WeaponList["all"].push(elem)
                     }
+                    line4Count["all"][elem.count4-1]++
+                    line4Count[elem.gacha_type][elem.count4-1]++
                 }
                 rank5Count[elem.gacha_type]++
                 rank5Count["all"]++
@@ -214,8 +220,8 @@ export function getRankCountData(dataList,startTime,endTime,gachaTypeList){
         rank4RoleList:rank4RoleList,
         rank5Avg:rank5Avg,
         rank4Avg:rank4Avg,
-        rank5Count:rank5Count,
-        
+        line5Count:line5Count,
+        line4Count:line4Count
     }
     return res
 }
@@ -264,7 +270,7 @@ export function mergeJson(dataList,json){
     let firstData = res[res.length-1]
     // 空List合并所有
     if(res.length==0){
-        firstData = {id:"200000000000000000"}
+        firstData = {id:"900000000000000000"}
     }
     // 导出json数据格式
     try{
@@ -334,20 +340,8 @@ export function gExcel(dataList) {
         XLSX.utils.book_append_sheet(wb, ws, elem.name);/* 生成xlsx文件(book,sheet数据,sheet命名) */
     })
         XLSX.writeFile(wb, "ysdata.xlsx");
-        // var wopts = {
-        //     bookType: 'xlsx', // 要生成的文件类型
-        //     bookSST: false, // 是否生成Shared String Table，官方解释是，如果开启生成速度会下降，但在低版本IOS设备上有更好的兼容性
-        //     type: 'binary'
-        // };
-        // var wbout = XLSX.write(wb, wopts);
-        // XLSX.writeFile(wb,"ysdata.xlsx",wopts)
-        // var blob = new Blob([s2ab(wbout)], {
-        //     type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
-        // });
-        // saveAs(blob, "ysdata.xlsx");
         return ret
 }
-
 // file转Json
 export async function fileToJson (file) {
     return new Promise((resolve, reject) => {
@@ -363,6 +357,5 @@ export async function fileToJson (file) {
         reader.readAsText(new Blob([file]), 'utf-8') // 按照utf-8编码解析
     })
 }
-
 export default{gExcel,gRawJson,fileToJson,getPieData,sortDataById,
     getRankCountData,getGachaCount,getWordCloudData,filterData}

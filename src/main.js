@@ -5,8 +5,7 @@ import store from './store'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
 import 'echarts-wordcloud'
-import Vant,{Uploader, Tab, Tabs, Sidebar, SidebarItem,Popup,DropdownMenu, DropdownItem,
-  Tabbar,TabbarItem,NavBar,Icon,Popover,Cell, CellGroup,Rate,Collapse,CollapseItem } from 'vant';
+import Vant,{Uploader, Tab, Tabs,Rate,Collapse,CollapseItem,Cell, CellGroup,Popup, Icon, Popover } from 'vant';
 import 'vant/lib/index.css';
 
 // 手动引入 ECharts 各模块来减小打包体积
@@ -14,9 +13,7 @@ import {
   CanvasRenderer
 } from 'echarts/renderers'
 import {
-  BarChart,
-  PieChart,
-  HeatmapChart
+  BarChart,PieChart,HeatmapChart,LineChart
 } from 'echarts/charts'
 import {
   LegendComponent,
@@ -29,9 +26,7 @@ import {
 } from 'echarts/components'
 use([
   CanvasRenderer,
-  PieChart,
-  BarChart,
-  HeatmapChart,
+  PieChart,BarChart,HeatmapChart,LineChart,
   LegendComponent,
   GridComponent,
   TooltipComponent,
@@ -41,13 +36,14 @@ use([
   VisualMapComponent
 ]);
 
-const app = createApp(App).use(store).use(router).use(Vant).use(Uploader)
-app.use(NavBar).use(Icon).use(Popover).use(Rate).use(Popup)
+const app = createApp(App).use(store).use(router)
+
+app.use(Vant).use(Icon).use(Popover).use(Rate).use(Popup).use(Uploader)
+// 折叠面板
 app.use(Collapse).use(CollapseItem)
-app.use(DropdownMenu).use(DropdownItem)
+// 单元格
 app.use(Cell).use(CellGroup)
-app.use(Tabbar).use(TabbarItem);
+// tab栏
 app.use(Tab).use(Tabs);
-app.use(Sidebar).use(SidebarItem);
 app.component('v-chart', ECharts)
 app.mount('#app')
