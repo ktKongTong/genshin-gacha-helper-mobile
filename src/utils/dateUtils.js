@@ -18,8 +18,8 @@ export function dateFormat(fmt, date) {
     return fmt;
 }
 export function compareDate(TimeA,TimeB){
-    var oDate1 = new Date(TimeA);
-    var oDate2 = new Date(TimeB);
+    var oDate1 = new Date(TimeA.replace(/-/g, "/"));
+    var oDate2 = new Date(TimeB.replace(/-/g, "/"));
     if(oDate1.getTime() > oDate2.getTime()){
         return true; //第一个大
     } else {

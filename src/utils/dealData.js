@@ -232,7 +232,8 @@ export function getPieData(dataList){
     var rank5Weapon = 0
     var rank4Weapon = 0
     var rank3Weapon = 0
-    dataList.forEach(elem=>{
+    for(let i=0;i<dataList.length;i++){
+        let elem = dataList[i]
         switch(true){
             case elem.rank_type=="5"&&elem.item_type=="角色":
                 rank5Role++;break
@@ -245,7 +246,37 @@ export function getPieData(dataList){
             case elem.rank_type=="3"&&elem.item_type=="武器":
                 rank3Weapon++;break
         }
-    })
+    }
+    // for( i in dataList){
+    //     let elem = dataList[i]
+    //     console.log(elem)
+    //     switch(true){
+    //         case elem.rank_type=="5"&&elem.item_type=="角色":
+    //             rank5Role++;break
+    //         case elem.rank_type=="4"&&elem.item_type=="角色":
+    //             rank4Role++;break
+    //         case elem.rank_type=="5"&&elem.item_type=="武器":
+    //             rank5Weapon++;break
+    //         case elem.rank_type=="4"&&elem.item_type=="武器":
+    //             rank4Weapon++;break
+    //         case elem.rank_type=="3"&&elem.item_type=="武器":
+    //             rank3Weapon++;break
+    //     }
+    // }
+    // dataList.forEach(elem=>{
+    //     switch(true){
+    //         case elem.rank_type=="5"&&elem.item_type=="角色":
+    //             rank5Role++;break
+    //         case elem.rank_type=="4"&&elem.item_type=="角色":
+    //             rank4Role++;break
+    //         case elem.rank_type=="5"&&elem.item_type=="武器":
+    //             rank5Weapon++;break
+    //         case elem.rank_type=="4"&&elem.item_type=="武器":
+    //             rank4Weapon++;break
+    //         case elem.rank_type=="3"&&elem.item_type=="武器":
+    //             rank3Weapon++;break
+    //     }
+    // })
     var res = {seriesData:[{"name":"3星武器","value":rank3Weapon},
                     {"name":"4星武器","value":rank4Weapon},
                     {"name":"5星武器","value":rank5Weapon},

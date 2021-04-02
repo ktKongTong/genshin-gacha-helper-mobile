@@ -134,6 +134,7 @@
 进行反馈</div>
 </div>
 
+
 </template>
 <style>
 /* 日期选择居中 */
@@ -171,9 +172,9 @@ export default {
       // 时间选择器的临时时间
       tmpDate:new Date(),
       // 为时间选择器设定的时间范围限制
-      StartMinDate:new Date("2020-09-15"),
+      StartMinDate:new Date("2020/09/15"),
       StartMaxDate:new Date(),
-      EndMinDate:new Date("2020-09-15"),
+      EndMinDate:new Date("2020/09/15"),
       EndMaxDate:new Date(),
       // 实际取值的时间
       StartDate:'2020-09-15 08:00',
@@ -241,7 +242,7 @@ export default {
                 return str;
             },
           },
-          data: "",
+          data: [],
           legendHoverLink: false
         }]
       },
@@ -289,7 +290,7 @@ export default {
               left: "15%",
               right: 30,
               cellSize: [15, 15],
-              range: ['2020-09-25', dateFormat("YYYY-mm-dd",new Date())],
+              range: ['2020-09-15', dateFormat("YYYY-mm-dd",new Date())],
               itemStyle: {borderWidth: 4,borderColor:"#ffffff"},
               dayLabel:{firstDay:1,position:"end",nameMap:"cn"},
               monthLabel:{fontSize:10},
@@ -370,6 +371,7 @@ export default {
           {name:"角色活动祈愿",data: [],type: 'line',smooth: true},
           {name:"武器活动祈愿",data: [],type: 'line',smooth: true}]
       },
+      test:"test"
     }
   },
   components: {
@@ -413,7 +415,7 @@ export default {
       }
       this.Init()
     }
-    console.log(this.line5Option)
+    // console.log(this.line5Option)
   },
   methods:{
     // 刷新数据,自动筛选
@@ -454,6 +456,7 @@ export default {
       this.heatmapOption.calendar.range=countres.heatmap.range
       // 词云
       this.wordOption.series[0].data=getWordCloudData(dataList)
+      
     },
     // 快捷选择池子，时间
     selectGacha(){
