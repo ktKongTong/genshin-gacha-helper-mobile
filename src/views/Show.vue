@@ -3,7 +3,7 @@
 <div>
 <!-- 顶部自定义导航 -->
 <div style="width:100%;">
-  <div style="display:flex; align-items:center" class="topNav">
+  <div style="width:100vw;display:flex; align-items:center" class="topNav">
     <div style="width:12vw;height:100%">
       <van-popover  v-model:show="showPopoverLeft" placement="bottom-start">
         <div style="margin:20px 20px 10px 20px;">
@@ -19,7 +19,7 @@
         </template>
       </van-popover>
     </div>
-    <div style="display:flex" >
+    <div style="display:flex;width:76vw" >
       <van-field v-model="StartDate" class='dateInput' style="margin:0 auto" label-width='0' placeholder="起始日期" disabled v-on:click="DatePicker(true)"/>
       <!-- <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha"> -->
       <!-- <span style="font-size:12px"> 快捷选择</span> -->
