@@ -142,7 +142,8 @@ export default {
      async getData(authkey){
         var that =this
         let dataList = []
-        let url = "https://gacha-api.ktnote.cn/gacha"
+        let url = "/apis"
+        // let url = "https://gacha-api.ktnote.cn/gacha"
         let typeList = [
         {"name":"常驻祈愿","value":"200","stepState":0},
         {"name":"新手祈愿","value":"100","stepState":1},
