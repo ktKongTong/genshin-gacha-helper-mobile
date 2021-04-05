@@ -142,8 +142,8 @@ export default {
      async getData(authkey){
         var that =this
         let dataList = []
-        let url = "/api/proxy"
-        // let url = "https://hk4e-api.mihoyo.com/apis"
+        let url = "/apis"
+        // let url = "https://hk4e-api.mihoyo.com"
         // let url = "https://gacha-api.ktnote.cn/gacha"
         let typeList = [
         {"name":"常驻祈愿","value":"200","stepState":0},
