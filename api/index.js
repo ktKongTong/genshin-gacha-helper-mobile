@@ -8,6 +8,7 @@ module.exports = (req, res) => {
     changeOrigin: true,
     pathRewrite: {
       // 通过路径重写，去除请求路径中的 `/backend`
+      '^/api':'/yunfeng482',
       // 例如 /backend/user/login 将被转发到 http://backend-api.com/user/login
       '/test': '/event/gacha_info/api/getGachaLog'
     }
