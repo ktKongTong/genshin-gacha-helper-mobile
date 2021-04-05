@@ -24,12 +24,10 @@
 <van-notice-bar style="margin-top:20px;text-align:start"
         wrapable
         :scrollable="false"
-        text="重要!
-        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求的。
-        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发,在响应的时候告诉浏览器表示允许非同源请求。
-        我可以使用该封装接口做到记录使用者的一些信息，如可能包含敏感信息的authkey或是你的祈愿记录;
-        我实际做的:该函数仅仅是转发，没有做任何记录，阿里云的日志记录也已关闭。
-        请自行抉择是否使用该工具"
+        text="
+        使用vercel Function直接转发请求取代阿里云函数。
+        我实际做的:仅仅转发，没有做任何记录。
+        "
     />
 <van-notice-bar style="text-align:start"
     wrapable
@@ -76,7 +74,7 @@ export default {
   data() {
     return {
         active:0,
-        requestSteps:["获取新手祈愿","获取常驻祈愿","获取武器获取祈愿","获取角色活动祈愿","完成"],
+        requestSteps:["获取新手祈愿","获取常驻祈愿","获取角色活动祈愿","获取武器活动祈愿","完成"],
         url:"",
         disabled:true,
         dialogVisible:false,
@@ -146,8 +144,8 @@ export default {
         // let url = "https://hk4e-api.mihoyo.com"
         // let url = "https://gacha-api.ktnote.cn/gacha"
         let typeList = [
-        {"name":"常驻祈愿","value":"200","stepState":0},
-        {"name":"新手祈愿","value":"100","stepState":1},
+        {"name":"新手祈愿","value":"100","stepState":0},
+        {"name":"常驻祈愿","value":"200","stepState":1},
         {"name":"角色活动祈愿","value":"301","stepState":2},
         {"name":"武器活动祈愿","value":"302","stepState":3}
         ]
