@@ -143,6 +143,7 @@ export default {
         var that =this
         let dataList = []
         let url = "/apis"
+        // let url = "https://hk4e-api.mihoyo.com/apis"
         // let url = "https://gacha-api.ktnote.cn/gacha"
         let typeList = [
         {"name":"常驻祈愿","value":"200","stepState":0},
@@ -164,7 +165,7 @@ export default {
                         gacha_type:gacha_type,page:page,end_id:end_id},
                 }).then((res)=>{
                     let data = res.data
-                    // console.log(res)
+                    console.log(res)
                     if(res.status==502||(res.status==200&&res.data["retcode"]==-1024)){
                         that.setState(stepState,"函数执行出错，如有需要，请联系开发者")
                         that.ctn=false
