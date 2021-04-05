@@ -26,12 +26,13 @@
 
 #### 效果图
 
-![p4](./pic/P4.png)
 
-![p5](./pic/P5.png)
+![p4](./pic/p4.png)
 
-![p6](./pic/P6.png)
+![p5](./pic/p5.png)
 
-![p7](./pic/P7.png)
+![p6](./pic/p6.png)
 
-![p8](./pic/P8.png)
+![p7](./pic/p7.png)
+
+![p8](./pic/p8.png)
