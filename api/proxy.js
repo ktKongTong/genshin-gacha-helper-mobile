@@ -21,7 +21,18 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 // }
 module.exports = (req, res) => {
   console.log(req)
-  res.json({
-    json: true
-  })
+  let target = 'https://hk4e-api.mihoyo.com/event/gacha_info/api/getGachaLog'
+    // 创建代理对象并转发请求
+  createProxyMiddleware({
+    target,
+    changeOrigin: true,
+    pathRewrite: {
+      // 通过路径重写，去除请求路径中的 `/backend`
+      // 例如 /backend/user/login 将被转发到 http://backend-api.com/user/login
+      '^/proxy/': '/'
+    }
+  })(req, res)
+//   res.json({
+//     json: true
+//   })
 }
