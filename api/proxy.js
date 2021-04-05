@@ -20,6 +20,7 @@ const { createProxyMiddleware } = require('http-proxy-middleware')
 //   })(req, res)
 // }
 module.exports = (req, res) => {
+  console.log(req)
   res.json({
     json: true
   })
