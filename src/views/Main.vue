@@ -142,7 +142,7 @@ export default {
      async getData(authkey){
         var that =this
         let dataList = []
-        let url = "/apis"
+        let url = "/api"
         // let url = "https://hk4e-api.mihoyo.com"
         // let url = "https://gacha-api.ktnote.cn/gacha"
         let typeList = [
