@@ -148,7 +148,7 @@ export default {
             let hasData = true
             that.setState(stepState,"开始获取"+gacha_type_name)
             while(hasData&&that.ctn){
-                await axios.get("/ktapi",{
+                await axios.get("/api",{
                     params:{authkey_ver:1,lang:"zh-cn",size:20,authkey:decodeURIComponent(authkey),
                         gacha_type:gacha_type,page:page,end_id:end_id},
                 }).then((res)=>{
