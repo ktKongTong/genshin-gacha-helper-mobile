@@ -6,7 +6,7 @@ module.exports = (req, res) => {
     target,
     changeOrigin: true,
     pathRewrite: {
-      '^/api':'/event/gacha_info/api/getGachaLog',
+      '^/ktapi':'/event/gacha_info/api/getGachaLog',
     }
   })(req, res)
 }
