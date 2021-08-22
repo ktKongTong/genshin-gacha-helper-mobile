@@ -21,16 +21,6 @@
     <van-button style="margin:0 auto" v-on:click="tips" type="primary" plain>使用说明</van-button>
     </div>
 </div>
-<van-notice-bar style="margin-top:20px;text-align:start"
-        wrapable
-        :scrollable="false"
-        text="重要!
-        因考虑到安全因素，浏览器是默认禁止页面发起非同源请求的。
-        为了获取数据的请求逻辑能够在前端执行，我使用阿里云函数对mihoyo接口做了一个封装转发,在响应的时候告诉浏览器表示允许非同源请求。
-        我可以使用该封装接口做到记录使用者的一些信息，如可能包含敏感信息的authkey或是你的祈愿记录;
-        我实际做的:该函数仅仅是转发，没有做任何记录，阿里云的日志记录也已关闭。
-        请自行抉择是否使用该工具"
-    />
 <van-notice-bar style="text-align:start"
     wrapable
     :scrollable="false"
@@ -142,7 +132,7 @@ export default {
      async getData(authkey){
         var that =this
         let dataList = []
-        let url = "https://gacha-api.ktnote.cn/gacha"
+        let url = ""
         let typeList = [
         {"name":"常驻祈愿","value":"200","stepState":0},
         {"name":"新手祈愿","value":"100","stepState":1},
@@ -158,7 +148,7 @@ export default {
             let hasData = true
             that.setState(stepState,"开始获取"+gacha_type_name)
             while(hasData&&that.ctn){
-                await axios.get(url,{
+                await axios.get("/ktapi/event/gacha_info/api/getGachaLog",{
                     params:{authkey_ver:1,lang:"zh-cn",size:20,authkey:decodeURIComponent(authkey),
                         gacha_type:gacha_type,page:page,end_id:end_id},
                 }).then((res)=>{
@@ -191,6 +181,8 @@ export default {
                         that.setState(stepState,"未知错误")
                         that.ctn=false
                     }
+                }).catch((res)=>{
+                    console.log(res)
                 })
             }
             if(!that.ctn){
