@@ -1,5 +1,9 @@
 <template>
 <div>
+<!-- <van-notice-bar
+  left-icon="volume-o"
+  text="推荐访问https://gacha.ktnote.cn,更快获取祈愿数据"
+/> -->
 <div>
     <van-field
     v-model="url"
@@ -45,19 +49,6 @@
 </van-overlay>
 </div>
 </template>
-<style>
-    #getDataStep > div > div.van-steps.van-steps--vertical{
-        border-bottom-left-radius: 10px;
-            border-bottom-right-radius: 10px;
-            padding:0 40px 32px 72px;
-        
-    }
-    #getDataStep > div{
-        margin:0 auto;
-        align-items:center;
-        text-align:center;
-    }
-</style>
 <script>
 import axios from 'axios'
 import { Dialog } from 'vant';
@@ -147,13 +138,19 @@ export default {
             let page = 1
             let hasData = true
             that.setState(stepState,"开始获取"+gacha_type_name)
+            let url="/api"
+            // if (window.location.hostname!="genshin-gacha-helper-mobile.ktnote.cn"||window.location.hostname!="genshin-gacha-helper-mobile.ktnote.cn"){
+            //     url = '/ktapi'
+            // }
             while(hasData&&that.ctn){
-                await axios.get("/api",{
+                await axios.get(url,{
                     params:{authkey_ver:1,lang:"zh-cn",size:20,authkey:decodeURIComponent(authkey),
                         gacha_type:gacha_type,page:page,end_id:end_id},
+                    headers:{
+                        Connection:'keep-alive'
+                    }
                 }).then((res)=>{
                     let data = res.data
-                    // console.log(res)
                     if(res.status==502||(res.status==200&&res.data["retcode"]==-1024)){
                         that.setState(stepState,"函数执行出错，如有需要，请联系开发者")
                         that.ctn=false
@@ -198,3 +195,17 @@ export default {
   }
 }
 </script>
+
+<style>
+    #getDataStep > div > div.van-steps.van-steps--vertical{
+        border-bottom-left-radius: 10px;
+            border-bottom-right-radius: 10px;
+            padding:0 40px 32px 72px;
+        
+    }
+    #getDataStep > div{
+        margin:0 auto;
+        align-items:center;
+        text-align:center;
+    }
+</style>
