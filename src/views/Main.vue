@@ -146,9 +146,9 @@ export default {
                 await axios.get(url,{
                     params:{authkey_ver:1,lang:"zh-cn",size:20,authkey:decodeURIComponent(authkey),
                         gacha_type:gacha_type,page:page,end_id:end_id},
-                    headers:{
-                        Connection:'keep-alive'
-                    }
+                    // headers:{
+                    //     Connection:'keep-alive'
+                    // }
                 }).then((res)=>{
                     let data = res.data
                     if(res.status==502||(res.status==200&&res.data["retcode"]==-1024)){
