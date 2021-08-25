@@ -6,8 +6,5 @@ module.exports = (req, res) => {
     pathRewrite: {
       '^/api':'/event/gacha_info/api/getGachaLog',
     },
-    Headers:{
-      Connection:"keep-alive"
-    }
   })(req, res)
 }

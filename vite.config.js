@@ -6,10 +6,10 @@ export default defineConfig({
   plugins: [vue()],
   server:{
     proxy:{
-        '/ktapi':{
-        changeOrigin: true,
-        target:'https://hk4e-api.mihoyo.com',
-        rewrite:path => path.replace(/^\/ktapi/, '/event/gacha_info/api/getGachaLog'),
+        '/api':{
+          changeOrigin: true,
+          target:'https://hk4e-api.mihoyo.com',
+          rewrite:path => path.replace(/^\/api/, '/event/gacha_info/api/getGachaLog'),
         }
       },
   }

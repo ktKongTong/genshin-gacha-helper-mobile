@@ -129,12 +129,7 @@
   </van-tab>
 </van-tabs>
 <van-divider/>
-<div style="margin-bottom:10px;margin-top:10px;font-size:12px">任何想法建议/Bug可到
-<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>
-进行反馈</div>
 </div>
-
-
 </template>
 <style>
 /* 日期选择居中 */
@@ -287,10 +282,10 @@ export default {
           calendar: {
               splitLine:{show:false},
               top: 50,
-              left: "15%",
-              right: 30,
-              cellSize: [15, 15],
-              range: ['2020-09-15', dateFormat("YYYY-mm-dd",new Date())],
+              // left: "15%",
+              // right: 30,
+              cellSize: [12, 12],
+              range: ['2021-04-15', dateFormat("YYYY-mm-dd",new Date())],
               itemStyle: {borderWidth: 4,borderColor:"#ffffff"},
               dayLabel:{firstDay:1,position:"end",nameMap:"cn"},
               monthLabel:{fontSize:10},
@@ -518,11 +513,7 @@ export default {
       var res = gRawJson(this.dataList)
       Notify({ type: 'success', message: '导出成功' });
       this.showPopoverRight=false
-    },
-    // 跳转GithubIssue
-    jump(){
-        window.location.href='https://github.com/ktKongTong/genshin-gacha-helper-mobile/issues'
-    },
+    }
   }
 }
 </script>
