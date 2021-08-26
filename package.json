@@ -8,20 +8,20 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
-    "echarts": "^5.0.2",
+    "echarts": "^5.1.2",
     "echarts-wordcloud": "^2.0.0",
     "file-saver": "^2.0.5",
-    "http-proxy-middleware": "^1.1.0",
-    "vant": "^3.0.10",
-    "vue": "^3.0.5",
-    "vue-echarts": "^6.0.0-rc.3",
-    "vue-router": "^4.0.1",
+    "http-proxy-middleware": "^2.0.1",
+    "vant": "^3.2.1",
+    "vue": "^3.2.4",
+    "vue-echarts": "^6.0.0",
+    "vue-router": "^4.0.11",
     "vuex": "^4.0.0-0",
-    "xlsx": "^0.16.9"
+    "xlsx": "^0.17.1"
   },
   "devDependencies": {
-    "@vitejs/plugin-vue": "^1.1.5",
-    "@vue/compiler-sfc": "^3.0.5",
-    "vite": "^2.1.0"
+    "@vitejs/plugin-vue": "^1.4.0",
+    "@vue/compiler-sfc": "^3.2.4",
+    "vite": "^2.5.0"
   }
 }

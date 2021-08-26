@@ -9,15 +9,11 @@
 <script>
 export default {
   name: 'Filter',
-  data() {
+  setup(){
     return {
       checkboxGroup: ["100","200","301","302"],
       names: [{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}],
     }
-  },
-  components: {
-  },
-  methods:{
   }
 }
 
