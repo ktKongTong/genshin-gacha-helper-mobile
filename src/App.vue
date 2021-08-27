@@ -32,8 +32,8 @@ export default {
 }
 .footer{
   font-size:12px;
-  margin-bottom: 10px;
-  margin-top:10px;
+  padding-bottom: 10px;
+  padding-top:10px;
   left: 0%;
   right: 0%;
   flex: 0;

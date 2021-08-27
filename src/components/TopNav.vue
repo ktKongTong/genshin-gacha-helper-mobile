@@ -1,37 +1,14 @@
 <template>
-    <div style="width:100%;">
-  <div style="width:100vw;display:flex; align-items:center" class="topNav">
-    <div style="width:12vw;height:100%">
-      <van-popover  v-model:show="showPopoverLeft" placement="bottom-start">
-        <div style="margin:20px 20px 10px 20px;">
-          <van-checkbox-group v-model="checkboxGroup">
-            <van-checkbox v-for="name in names" :name="name['value']" :key="name['value']">{{name["name"]}}</van-checkbox>
-          </van-checkbox-group>
-          <div style="display:flex">
-          <van-button style="margin:4px auto" v-on:click="gachaTypeUpDate" size="small">确认</van-button>
-          </div>
-        </div>
-        <template #reference>
-          <van-icon style="margin:0 auto" class-prefix="iconfont icon-menu" name="extra"></van-icon>
-        </template>
-      </van-popover>
+<div class="mytopNav">
+    <!-- 左侧栏 -->
+    <div class='nav-left'  v-on:click="click">
+    <van-icon name="ellipsis" />
     </div>
-    <div style="display:flex;width:76vw" >
-      <van-field v-model="StartDate" class='dateInput' style="margin:0 auto" label-width='0' placeholder="起始日期" disabled v-on:click="DatePicker(true)"/>
-      <!-- <div style="display:flex;align-items:center;margin:0 auto"  v-on:click="selectGacha"> -->
-      <!-- <span style="font-size:12px"> 快捷选择</span> -->
-      <!-- </div> -->
-      <van-field v-model="EndDate" class='dateInput'  style="margin:0 auto"  label-width='0' placeholder="结束日期" disabled v-on:click="DatePicker(false)" />
-      <van-popup v-model:show="DatePickerShow" :closeable="false" position="bottom" round :style="{ height: '400px' }">
-        <div style="line-height:2;margin-top:15px;display:flex;width:100vw">
-          <span style="margin:0 auto">{{currentPicker?'起始日期':'截止日期'}}</span>
-          <span style="margin-right:30px;margin-left:auto;color:#0000ff" v-on:click="UpDateTime">确认</span>      
-        </div>
-        <van-datetime-picker v-model="tmpDate" type="datetime" :min-date="currentPicker?StartMinDate:EndMinDate" :max-date="currentPicker?StartMaxDate:EndMaxDate">
-        <template #default></template></van-datetime-picker>
-      </van-popup>
-    </div>
-    <div style="width:12vw">
+    <!-- <div class="nav-center">
+      quick select
+    </div> -->
+    <!-- 右侧栏 -->
+    <div class="nav-right">
     <van-popover v-model:show="showPopoverRight" placement="bottom-end">
         <van-uploader accept='application/json' :after-read="afterRead">
         <van-cell title="合并历史记录(JSON)" />
@@ -43,27 +20,84 @@
       <!-- 跳转分析祈愿 -->
       <van-cell title="祈愿记录分析工具" arrow-direction='t' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
-      <template #reference>
-        <van-icon style="margin:0 auto" class-prefix="iconfont icon-shaixuan" name="extra"/>
-      </template>
+    <template #reference>
+      <van-icon name="add-o" />
+    </template>
     </van-popover>
     </div>
+    
 </div>
+<select-menu :show="showPopoverLeft"></select-menu>
 </template>
+
 <script>
-import {defineComponent} from 'vue'
+import selectMenu from './SelectMenu.vue'
+import {ref,defineComponent} from 'vue'
 export default defineComponent({
-  name:'topnav',
-  setup(){
+  name:'topNav',
+  components:{
+    selectMenu
+  },
+  props:{
+
+  },
+  setup(props, { attrs, slots, emit, expose }){
+    const checkboxGroup=ref(["100","200","301","302"])
+    const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
     const showPopoverLeft = ref(false)
     const showPopoverRight = ref(false)
     const DatePickerShow=ref(false)
-    const StartDate = ref("")
-    const EndDate = ref("")
+    const StartDate = ref("2020-09-15")
+    const EndDate = ref("2020-09-15")
     const tmpDate = ref("")
+    expose({
+      StartDate,
+      EndDate
+    })
+    const click = ()=>{
+      showPopoverLeft.value = !showPopoverLeft.value
+      if(showPopoverLeft.value){
+        document.body.style.overflow = 'hidden'
+      }else{
+        document.body.style.overflow = ''
+      }
+    }
     return{
-
+        checkboxGroup,names,
+        showPopoverLeft,showPopoverRight,DatePickerShow,
+        StartDate,EndDate,tmpDate,
+        click
     }
   }   
 })
 </script>
+
+<style scoped>
+  .mytopNav{
+    width: 100vw;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: relative;
+    height: 50px;
+    background: white;
+    z-index: 999;
+  }
+  .nav-left{
+    display: block;
+    width: 20vw;
+    text-align: start;
+    padding: 0 16px;
+  }
+  .nav-center{
+    text-align: center;
+    display: flex;
+    padding: 0 16px;
+  }
+  .nav-right{
+    display: block;
+    width: 20vw;
+    text-align: end;
+    padding: 0 16px;
+  }
+</style>

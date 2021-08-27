@@ -1,8 +1,9 @@
 
 <template>
 <div>
+  <top-nav></top-nav>
 <!-- 顶部自定义导航 -->
-<div style="width:100%;">
+<div class='mytop' style="width:100%;">
   <div style="width:100vw;display:flex; align-items:center" class="topNav">
     <div style="width:12vw;height:100%">
       <van-popover  v-model:show="showPopoverLeft" placement="bottom-start">
@@ -136,9 +137,6 @@
     .dateInput > div > div > input{
       text-align: center !important;
     }
-    .topNav > span {
-      margin:0 auto;
-    }
     .van-checkbox{
       margin:5px auto;
     }
@@ -149,8 +147,13 @@ import { Notify } from 'vant';
 import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,sortDataById,
 getRankCountData,getGachaCount,getWordCloudData,filterData} from '../utils/dealData.js'
 import {dateFormat} from '../utils/dateUtils.js'
+
+import topNav from '../components/TopNav.vue'
 export default {
   name: 'Show',
+  components:{
+    topNav
+  },
   setup() {
   },
   data() {
@@ -368,8 +371,6 @@ export default {
       },
       test:"test"
     }
-  },
-  components: {
   },
   created(){
   },

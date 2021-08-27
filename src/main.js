@@ -4,7 +4,8 @@ import router from './router'
 import ECharts from 'vue-echarts'
 import { use } from "echarts/core";
 import 'echarts-wordcloud'
-import Vant,{Uploader, Tab, Tabs,Rate,Collapse,CollapseItem,Cell, CellGroup,Popup, Icon, Popover } from 'vant';
+import VCalendar from 'v-calendar';
+import Vant,{Uploader, Tab, Tabs,Rate,Collapse,CollapseItem,Cell, CellGroup,Popup, Icon, Popover,Overlay } from 'vant';
 import 'vant/lib/index.css';
 // 手动引入 ECharts 各模块来减小打包体积
 import {
@@ -35,8 +36,8 @@ use([
 ]);
 
 const app = createApp(App).use(router)
-
-app.use(Vant).use(Icon).use(Popover).use(Rate).use(Popup).use(Uploader)
+app.use(VCalendar)
+app.use(Vant).use(Icon).use(Popover).use(Rate).use(Popup).use(Uploader).use(Overlay)
 // 折叠面板
 app.use(Collapse).use(CollapseItem)
 // 单元格

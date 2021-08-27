@@ -56,6 +56,11 @@
   dependencies:
     "@types/node" "*"
 
+"@types/lodash@^4.14.165":
+  version "4.14.172"
+  resolved "https://registry.nlark.com/@types/lodash/download/@types/lodash-4.14.172.tgz#aad774c28e7bfd7a67de25408e03ee5a8c3d028a"
+  integrity sha1-qtd0wo57/Xpn3iVAjgPuWow9Aoo=
+
 "@types/node@*":
   version "16.7.1"
   resolved "https://registry.nlark.com/@types/node/download/@types/node-16.7.1.tgz#c6b9198178da504dfca1fd0be9b2e1002f1586f0"
@@ -235,6 +240,11 @@ consolidate@^0.16.0:
   dependencies:
     bluebird "^3.7.2"
 
+core-js@^3.7.0:
+  version "3.16.3"
+  resolved "https://registry.nlark.com/core-js/download/core-js-3.16.3.tgz#1f2d43c51a9ed014cc6c83440af14697ae4b75f2"
+  integrity sha1-Hy1DxRqe0BTMbINECvFGl65LdfI=
+
 crc-32@~1.2.0:
   version "1.2.0"
   resolved "https://registry.npm.taobao.org/crc-32/download/crc-32-1.2.0.tgz#cb2db6e29b88508e32d9dd0ec1693e7b41a18208"
@@ -252,6 +262,16 @@ csstype@^2.6.8:
   version "2.6.17"
   resolved "https://registry.nlark.com/csstype/download/csstype-2.6.17.tgz?cache=0&sync_timestamp=1618818427821&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fcsstype%2Fdownload%2Fcsstype-2.6.17.tgz#4cf30eb87e1d1a005d8b6510f95292413f6a1c0e"
   integrity sha1-TPMOuH4dGgBdi2UQ+VKSQT9qHA4=
+
+date-fns-tz@^1.0.12:
+  version "1.1.6"
+  resolved "https://registry.nlark.com/date-fns-tz/download/date-fns-tz-1.1.6.tgz#93cbf354e2aeb2cd312ffa32e462c1943cf20a8e"
+  integrity sha1-k8vzVOKuss0xL/oy5GLBlDzyCo4=
+
+date-fns@^2.16.1:
+  version "2.23.0"
+  resolved "https://registry.nlark.com/date-fns/download/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
+  integrity sha1-TohslBZZrwz3sw+v3R6qN+iHiKk=
 
 echarts-wordcloud@^2.0.0:
   version "2.0.0"
@@ -437,7 +457,7 @@ lodash.camelcase@^4.3.0:
   resolved "https://registry.npm.taobao.org/lodash.camelcase/download/lodash.camelcase-4.3.0.tgz#b28aa6288a2b9fc651035c7711f65ab6190331a6"
   integrity sha1-soqmKIorn8ZRA1x3EfZathkDMaY=
 
-lodash@^4.17.19:
+lodash@^4.17.19, lodash@^4.17.20:
   version "4.17.21"
   resolved "https://registry.npm.taobao.org/lodash/download/lodash-4.17.21.tgz?cache=0&sync_timestamp=1613835860585&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Flodash%2Fdownload%2Flodash-4.17.21.tgz#679591c564c3bffaae8454cf0b3df370c3d6911c"
   integrity sha1-Z5WRxWTDv/quhFTPCz3zcMPWkRw=
@@ -495,11 +515,6 @@ picomatch@^2.2.3:
   version "2.3.0"
   resolved "https://registry.nlark.com/picomatch/download/picomatch-2.3.0.tgz?cache=0&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fpicomatch%2Fdownload%2Fpicomatch-2.3.0.tgz#f1f061de8f6a4bf022892e2d128234fb98302972"
   integrity sha1-8fBh3o9qS/AiiS4tEoI0+5gwKXI=
-
-picomatch@^2.0.5:
-  version "2.2.2"
-  resolved "https://registry.npm.taobao.org/picomatch/download/picomatch-2.2.2.tgz#21f333e9b6b8eaff02468f5146ea406d345f4dad"
-  integrity sha1-IfMz6ba46v8CRo9RRupAbTRfTa0=
 
 postcss-modules-extract-imports@^3.0.0:
   version "3.0.0"
@@ -583,11 +598,6 @@ printj@~1.1.0, printj@~1.1.2:
 
 requires-port@^1.0.0:
   version "1.0.0"
-  resolved "https://registry.nlark.com/requires-port/download/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
-  integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
-
-requires-port@^1.0.0:
-  version "1.0.0"
   resolved "https://registry.npm.taobao.org/requires-port/download/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
   integrity sha1-kl0mAdOaxIXgkc8NpcbmlNw9yv8=
 
@@ -664,6 +674,17 @@ util-deprecate@^1.0.2:
   version "1.0.2"
   resolved "https://registry.npm.taobao.org/util-deprecate/download/util-deprecate-1.0.2.tgz#450d4dc9fa70de732762fbd2d4a28981419a0ccf"
   integrity sha1-RQ1Nyfpw3nMnYvvS1KKJgUGaDM8=
+
+v-calendar@^3.0.0-alpha.5:
+  version "3.0.0-alpha.5"
+  resolved "https://registry.nlark.com/v-calendar/download/v-calendar-3.0.0-alpha.5.tgz#a76a08a9b177d9d0de6197c56600332924e7dc83"
+  integrity sha1-p2oIqbF32dDeYZfFZgAzKSTn3IM=
+  dependencies:
+    "@types/lodash" "^4.14.165"
+    core-js "^3.7.0"
+    date-fns "^2.16.1"
+    date-fns-tz "^1.0.12"
+    lodash "^4.17.20"
 
 vant@^3.2.1:
   version "3.2.1"
