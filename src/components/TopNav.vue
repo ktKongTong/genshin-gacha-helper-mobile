@@ -15,8 +15,8 @@
       </van-uploader>
     <van-cell-group>
       <!-- JSON/Excel导出 -->
-      <van-cell title="JSON  记录导出"  v-on:click="exportJson"/>
-      <van-cell title="Excel 记录导出"  v-on:click="exportExcel"/>
+      <van-cell title="JSON  记录导出"  v-on:click="context.emit('exportJson')"/>
+      <van-cell title="Excel 记录导出"  v-on:click="context.emit('exportExcel')"/>
       <!-- 跳转分析祈愿 -->
       <van-cell title="祈愿记录分析工具" arrow-direction='t' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
@@ -27,33 +27,37 @@
     </div>
     
 </div>
-<select-menu :show="showPopoverLeft"></select-menu>
+<select-menu ref="menu" @filterSubmit="submit" :show="showPopoverLeft"></select-menu>
 </template>
 
 <script>
 import selectMenu from './SelectMenu.vue'
-import {ref,defineComponent} from 'vue'
+import {ref,defineComponent,onMounted} from 'vue'
 export default defineComponent({
   name:'topNav',
   components:{
     selectMenu
   },
-  props:{
-
+  emits:{
+      "exportJson":null,
+      "exportExcel":null,
+      "afterRead":null
   },
-  setup(props, { attrs, slots, emit, expose }){
-    const checkboxGroup=ref(["100","200","301","302"])
-    const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
+  setup(props, context){
+
+    const menu = ref(null)
     const showPopoverLeft = ref(false)
     const showPopoverRight = ref(false)
-    const DatePickerShow=ref(false)
-    const StartDate = ref("2020-09-15")
-    const EndDate = ref("2020-09-15")
     const tmpDate = ref("")
-    expose({
-      StartDate,
-      EndDate
-    })
+    const afterRead = (file)=>{
+      console.log(file)
+      context.emit('afterRead',file)
+    }
+    const submit = () =>{
+      click()
+      console.log(menu.value)
+      // 更新数据
+    }
     const click = ()=>{
       showPopoverLeft.value = !showPopoverLeft.value
       if(showPopoverLeft.value){
@@ -63,10 +67,8 @@ export default defineComponent({
       }
     }
     return{
-        checkboxGroup,names,
-        showPopoverLeft,showPopoverRight,DatePickerShow,
-        StartDate,EndDate,tmpDate,
-        click
+        showPopoverLeft,showPopoverRight,
+        click,submit,menu,afterRead,context
     }
   }   
 })
