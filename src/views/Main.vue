@@ -145,7 +145,7 @@ export default {
                             if(data.data["list"].length<20){
                                 hasData=false
                             }
-                            dataList.concat(data.data.list)
+                            dataList = dataList.concat(data.data.list)
                             page++;
                             end_id = data.data["list"].pop()["id"]
                         }else{
