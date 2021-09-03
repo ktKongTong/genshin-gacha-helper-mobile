@@ -1,13 +1,15 @@
 // 数据处理
 import XLSX from "xlsx";
 import {saveAs} from 'file-saver'
-import * as dayjs from 'dayjs'
+import dayjs from 'dayjs'
 import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
+import customParseFormat from 'dayjs/plugin/customParseFormat'
 import {dayAdd,compareDate} from './dateUtils'
 var tL=[{"name":"角色活动祈愿","value":"301"},
 {"name":"常驻祈愿","value":"200"},
 {"name":"新手祈愿","value":"100"},
 {"name":"武器活动祈愿","value":"302"}]
+dayjs.extend(customParseFormat)
 dayjs.extend(isSameOrBefore)
 export function getWordCloudData(dataList){
     // name:"",value:""
