@@ -2,31 +2,34 @@
 <div class="menumask" v-if='show' @touchmove.prevent @mousewheel.prevent/>
 <transition name="fade">
 <div v-if='show'  class="menu">
-    <div style="text-align:start;padding:10px 10px;font-size:14px">池子选择</div>
+    <div style="text-align:start;padding:20px 10px;font-size:14px">池子选择</div>
     <div style="margin:10px">
-    <van-checkbox-group v-model="checkboxGroup">
+    <van-checkbox-group v-model="gachaGroup">
     <van-checkbox v-for="name in names" :name="name['value']" :key="name['value']">{{name["name"]}}</van-checkbox>
     </van-checkbox-group>
     </div>
+    <van-divider/>
     <div style="text-align:start;padding:10px 10px;font-size:14px">起始日期选择</div>     
-    <v-date-picker v-model="startDate" mode="dateTime" is24hr>
+    <v-date-picker v-model="startDate" is-required :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
     <template v-slot="{ inputEvents }">
-        <van-field disabled v-on="inputEvents" v-model="startDateField"/>
+        <van-field class="field" disabled v-on="inputEvents"  v-model="startDateField"/>
     </template>
     </v-date-picker>
+    <van-divider/>
     <div style="text-align:start;padding:10px 10px;font-size:14px">终止日期选择</div>
-    <v-date-picker v-model="endDate" :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
+    <v-date-picker v-model="endDate" is-required  :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
     <template v-slot="{ inputEvents }">
-        <van-field class="bottomfield" disabled v-on="inputEvents" v-model="endDateField"/>
+        <van-field class="bottomfield field" disabled v-on="inputEvents" v-model="endDateField"/>
     </template>
     </v-date-picker>
-    <div>t</div>
+    <van-button v-on:click="submit">确定</van-button>
 </div>
 
 </transition>
 </template>
 <script>
-import {computed, ref, watch} from 'vue'
+import {computed, ref, watch,defineExpose} from 'vue'
+import {dateFormat} from '../utils/dateUtils.js'
 export default {
     name:"selectMenu",
     props:{
@@ -35,21 +38,30 @@ export default {
           default:false
       }
     },
-    setup(){
-    const checkboxGroup=ref(["100","200","301","302"])
-    const startDate = ref(new Date())
-    const endDate = ref(new Date())
-    const startDateField = computed(() => {
-      return startDate.value.toLocaleString()
-    })
-    const endDateField = computed(() => {
-      return endDate.value.toLocaleString()
-    })
-    const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
-    
-    return{
-        checkboxGroup,names,startDate,endDate,startDateField,endDateField
-    }
+    emits:{
+        "filterSubmit":null
+    },
+    setup(props,context){
+        const gachaGroup=ref(["100","200","301","302"])
+        const startDate = ref(new Date("2020-09-15 08:00"))
+        const endDate = ref(new Date())
+        const startDateField = computed(() => {
+        return  dateFormat("YYYY-mm-dd HH:MM",startDate.value)
+        })
+        const endDateField = computed(() => {
+        return  dateFormat("YYYY-mm-dd HH:MM",endDate.value)
+        })
+        const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
+        // 提交条件筛选
+        const submit = () => {
+            context.emit("filterSubmit")
+        }
+        return{
+            gachaGroup,names,
+            startDate,endDate,
+            startDateField,endDateField,
+            submit
+        }
     }
 }
 </script>
@@ -85,7 +97,9 @@ export default {
     transition: transform 0.3s ease;
     }
     .bottomfield{
-        margin-left: 20px;
-        margin-bottom: 400px;
+         margin-bottom: 120px;
+    }
+    .field{
+         margin-left: 10px;
     }
 </style>

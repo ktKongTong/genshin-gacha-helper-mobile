@@ -8,10 +8,12 @@
   },
   "dependencies": {
     "axios": "^0.21.1",
+    "dayjs": "^1.10.6",
     "echarts": "^5.1.2",
     "echarts-wordcloud": "^2.0.0",
     "file-saver": "^2.0.5",
     "http-proxy-middleware": "^2.0.1",
+    "swiper": "^7.0.2",
     "v-calendar": "^3.0.0-alpha.5",
     "vant": "^3.2.1",
     "vue": "^3.2.4",
