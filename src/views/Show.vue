@@ -1,9 +1,9 @@
 
 <template>
 <div>
-  <top-nav @exportExcel="exportExcel" @exportJson="exportJson" @afterRead="afterRead"></top-nav>
+  <topNav ref="nav" @exportExcel="exportExcel" @exportJson="exportJson" @afterRead="afterRead" @filter="filter"></topNav>
 <!-- 顶部自定义导航 -->
-<van-tabs v-model:active="active" swipeable>
+<van-tabs v-model:active="active" >
   <van-tab title="总览">
     <div>
       <div>
@@ -65,8 +65,18 @@
     </div>
   </van-tab>
   <van-tab title="祈愿次数">
-    <div>
-      <v-chart autoresize style="height:30vh" :option="heatmapOption"/>
+    <div style="width:100vw">
+      <swiper
+    :direction="'horizontal'"
+    :slidesPerView="'auto'"
+    :freeMode="true"
+    :scrollbar="true"
+    :mousewheel="true"
+  >
+    <swiper-slide>
+        <v-chart :init-options= "{width:800,height:150}" :option="heatmapOption"/>
+    </swiper-slide>
+  </swiper>
     </div>
     <div>
       <v-chart autoresize style="height:60vh" :option="barOption"/>
@@ -89,70 +99,75 @@
     .van-checkbox{
       margin:5px auto;
     }
+    .swiper {
+  width: 100%;
+  height: 100%;
+}
+
+.swiper-slide {
+    overflow: auto;  
+    -webkit-overflow-scrolling: touch;   
+}  
 </style>
-<script>
+<script setup name="Show">
+import { Swiper, SwiperSlide } from 'swiper/vue'
+import "swiper/css/scrollbar"
+import SwiperCore, {
+  Scrollbar,Mousewheel
+} from 'swiper'
+SwiperCore.use([Scrollbar,Mousewheel])
+import 'swiper/css'
 import '../assets/iconfont.css'
 import { Notify } from 'vant';
 import {gExcel,gRawJson,mergeJson,fileToJson,getPieData,sortDataById,
-getRankCountData,getGachaCount,getWordCloudData,filterData} from '../utils/dealData.js'
+getRankCountData,getGachaCount,getWordCloudData,filterData,getHeatMap} from '../utils/dealData.js'
 import {dateFormat} from '../utils/dateUtils.js'
-
+import { useRoute } from 'vue-router'
 import topNav from '../components/TopNav.vue'
-export default {
-  name: 'Show',
-  components:{
-    topNav
-  },
-  setup() {
-    // const startDate = ref(new Date("2020/09/15"))
-  },
-  data() {
-    return {
-      // 顶部左侧导航栏弹出框
-      showPopoverLeft:false,
-      // 弹出框内容 复选框
-      checkboxGroup: ["100","200","301","302"],
-      names: [{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}],      
-      // 是否显示时间选择器
-      DatePickerShow:false,
-      // 当前显示起始/截止时间选择器
-      currentPicker:true,
-      // 时间选择器的临时时间
-      tmpDate:new Date(),
+import { onMounted,ref } from 'vue'
+
+      const route = useRoute();
+      const nav = ref(null)
       // 为时间选择器设定的时间范围限制
-      StartMinDate:new Date("2020/09/15"),
-      StartMaxDate:new Date(),
-      EndMinDate:new Date("2020/09/15"),
-      EndMaxDate:new Date(),
+      const StartMinDate = ref(new Date("2020/09/15"))
+      const StartMaxDate = ref(new Date())
+      const EndMinDate=ref(new Date("2020/09/15"))
+      const EndMaxDate=ref(new Date())
       // 实际取值的时间
-      StartDate:'2020-09-15 08:00',
-      EndDate:dateFormat("YYYY-mm-dd HH:MM",new Date()),
+      const StartDate=ref('2020-09-15 08:00')
+      const EndDate=ref(dateFormat("YYYY-mm-dd HH:MM",new Date()))
       // Tabs栏的当前激活页
-      active :0,
+      const active =ref(0)
       // 总览页面 折叠面板显示项
-      activeNames:["5"],
-      rate:[5,4,3],
+      const activeNames=ref(["5"])
+      const rate=[5,4,3]
       // 传来的数据存储的List
-      dataList:[],
+      const dataList=ref([])
       // 5星角色的List
-      rank5RoleList : {"all":[],"100":[],"200":[],"301":[],"302":[]},
+      const rank5RoleList = ref({"all":[],"100":[],"200":[],"301":[],"302":[]})
       // 5星武器的List
-      rank5WeaponList : {"all":[],"100":[],"200":[],"301":[],"302":[]},
+      const rank5WeaponList = ref({"all":[],"100":[],"200":[],"301":[],"302":[]})
       // 4星角色List
-      rank4RoleList : {"all":[],"100":[],"200":[],"301":[],"302":[]},
+      const rank4RoleList = ref({"all":[],"100":[],"200":[],"301":[],"302":[]})
       // 4星武器List
-      rank4WeaponList : {"all":[],"100":[],"200":[],"301":[],"302":[]},
+      const rank4WeaponList = ref({"all":[],"100":[],"200":[],"301":[],"302":[]})
       // 5星出货均值
-      rank5Avg:{"all":0,"100":0,"200":0,"301":0,"302":0},
+      const rank5Avg=ref({"all":0,"100":0,"200":0,"301":0,"302":0})
       // 4星出货均值
-      rank4Avg:{"all":0,"100":0,"200":0,"301":0,"302":0},
-      rankRateInfo:{
+      const rank4Avg=ref({"all":0,"100":0,"200":0,"301":0,"302":0})
+      const rankRateInfo=ref({
         // 不同星级比率
         rank5Rate:0,rank4Rate:0,rank3Rate:0
-      },
-      show5LineCharts:false,
+      })
+      const show5LineCharts=ref(false)
+      const filter = ()=>{
+        StartDate.value = dateFormat("YYYY-mm-dd HH:MM",nav.value.menu.startDate)
+        EndDate.value = dateFormat("YYYY-mm-dd HH:MM",nav.value.menu.endDate)
+        console.log()
+        Init()
+      }
       // 饼图配置项
-      pieOption:{
+      const pieOption = ref({
         title: {text: '祈愿总览',left: 'center'},
         tooltip: {
           trigger: 'item',
@@ -191,9 +206,9 @@ export default {
           data: [],
           legendHoverLink: false
         }]
-      },
+      })
       // 条形图配置项
-      barOption: {
+      const barOption = ref({
         dataZoom: [{type:'slider' },],
         color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'], 
         tooltip: {trigger: 'axis',axisPointer: {type: 'shadow'}},
@@ -223,10 +238,10 @@ export default {
                 name: '5星角色',type: 'bar',stack:'day',emphasis: {focus: 'series'},
                 data: [0],legendHoverLink: false
             }]
-      },
+      })
       // 热力图配置项
-      heatmapOption:{
-          title: {left: 'center',text: '祈愿热力图'},
+      const heatmapOption = ref({
+          title: {left: 'left',text: '祈愿热力图'},
           tooltip: {
             formatter:function (params) {return params.data[0]+" : "+params.data[1]}
           },
@@ -235,7 +250,7 @@ export default {
               top: 50,
               // left: "15%",
               // right: 30,
-              cellSize: [12, 12],
+              cellSize: [14, 14],
               range: ['2021-04-15', dateFormat("YYYY-mm-dd",new Date())],
               itemStyle: {borderWidth: 4,borderColor:"#ffffff"},
               dayLabel:{firstDay:1,position:"end",nameMap:"cn"},
@@ -261,9 +276,9 @@ export default {
               {max: 1,color:"#ebedf0"}],
           },
           series: {type: 'heatmap',coordinateSystem: 'calendar',data: []}
-      },
+      })
       // 词云配置项
-      wordOption: {
+      const wordOption = ref({
         tooltip:{
             trigger: 'item',
             triggerOn: "mousemove",
@@ -288,9 +303,9 @@ export default {
         },
         data: []
         }]
-      },
+      })
       // 氪金大佬/欧皇 多五星专供出货次数分布
-      line5Option:{
+      const line5Option = ref({
           grid:{top:"20%"},
           title:{left: 'center',text: '五星出货频次图'},
           xAxis: {type: 'category',data: Array.from(new Array(91).keys()).slice(1)},
@@ -302,9 +317,9 @@ export default {
           {name:"常驻祈愿",data: [],type: 'line',smooth: true},
           {name:"角色活动祈愿",data: [],type: 'line',smooth: true},
           {name:"武器活动祈愿",data: [],type: 'line',smooth: true}]
-      },
+      })
       // 四星出货次数分布
-      line4Option:{
+      const line4Option = ref({
           grid:{top:"20%"},
           title:{left: 'center',text: '四星出货频次图'},
           xAxis: {type: 'category',data: Array.from(new Array(11).keys()).slice(1)},
@@ -316,20 +331,17 @@ export default {
           {name:"常驻祈愿",data: [],type: 'line',smooth: true},
           {name:"角色活动祈愿",data: [],type: 'line',smooth: true},
           {name:"武器活动祈愿",data: [],type: 'line',smooth: true}]
-      },
-      test:"test"
-    }
-  },
-  created(){
-  },
-  mounted(){
+      })
+
+
+      onMounted(()=>{
     // 读取传过来的数据
-    try{
-      this.dataList = JSON.parse(this.$route.params.dataList)
+      try{
+        dataList.value = JSON.parse(route.params.dataList)
       // 合并原有本地数据
       try{
-        var tmpList = this.dataList.sort(sortDataById).reverse()
-        var oldList = JSON.parse(localStorage.getItem("dataList"));
+        var tmpList = dataList.value.sort(sortDataById).reverse()
+        var oldList = JSON.parse(localStorage.getItem("dataList"))
         if(oldList!=null&&oldList.length>0){
           // 空List合并所有
           let firstData = {id:"200000000000000000"}
@@ -342,127 +354,107 @@ export default {
               if(elem.id===firstData.id){    
               }else if(sortDataById(elem,firstData)==1){
               // elemId小于firstId
-                  this.dataList.push(elem)
+                  dataList.value.push(elem)
               }
           });
         }
       }catch{
 
       }
-      this.Init()
-      localStorage.setItem("dataList", JSON.stringify(this.dataList));
+      Init()
+      localStorage.setItem("dataList", JSON.stringify(dataList.value));
     }catch{
       Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
-      this.dataList = JSON.parse(localStorage.getItem("dataList"));
-      if(this.dataList==null){
-        this.dataList = []
+      dataList.value = JSON.parse(localStorage.getItem("dataList"));
+      if(dataList.value==null){
+        dataList.value = []
       }
-      this.Init()
+      Init()
     }
-    // console.log(this.line5Option)
-  },
-  methods:{
+    })
     // 刷新数据,自动筛选
-    Init(){
-      var dataList = filterData(this.dataList,this.StartDate,this.EndDate,this.checkboxGroup)
+    const Init = ()=>{
+      var data = filterData(dataList.value,StartDate.value,EndDate.value,nav.value.menu.gachaGroup)
       // 饼图
-      var ret =  getPieData(dataList)
-      this.pieOption.series[0].data = ret.seriesData
-      this.rankRateInfo = ret.rankRateInfo
+      var ret =  getPieData(data)
+      pieOption.value.series[0].data = ret.seriesData
+      rankRateInfo.value = ret.rankRateInfo
       // 这个不能使用filter，数据会出错，应该先计算再筛选
-      var res = getRankCountData(this.dataList,this.StartDate,this.EndDate,this.checkboxGroup)
-      this.rank5RoleList = res.rank5RoleList
-      this.rank5WeaponList = res.rank5WeaponList
-      this.rank4RoleList = res.rank4RoleList
-      this.rank4WeaponList = res.rank4WeaponList
-      this.rank5Avg = res.rank5Avg
-      this.rank4Avg = res.rank4Avg
+      var res = getRankCountData(data,StartDate.value,EndDate.value,nav.value.menu.gachaGroup)
+      rank5RoleList.value = res.rank5RoleList
+      rank5WeaponList.value = res.rank5WeaponList
+      rank4RoleList.value = res.rank4RoleList
+      console.log(rank4RoleList.value)
+      rank4WeaponList.value = res.rank4WeaponList
+      rank5Avg.value = res.rank5Avg
+      rank4Avg.value = res.rank4Avg
       // 祈愿频次/与饼图一同计算
-      this.line5Option.series[0].data = res.line5Count["all"]
-      this.line5Option.series[1].data = res.line5Count["100"]
-      this.line5Option.series[2].data = res.line5Count["200"]
-      this.line5Option.series[3].data = res.line5Count["301"]
-      this.line5Option.series[4].data = res.line5Count["302"]
-      this.line4Option.series[0].data = res.line4Count["all"]
-      this.line4Option.series[1].data = res.line4Count["100"]
-      this.line4Option.series[2].data = res.line4Count["200"]
-      this.line4Option.series[3].data = res.line4Count["301"]
-      this.line4Option.series[4].data = res.line4Count["302"]
+      line5Option.value.series[0].data = res.line5Count["all"]
+      line5Option.value.series[1].data = res.line5Count["100"]
+      line5Option.value.series[2].data = res.line5Count["200"]
+      line5Option.value.series[3].data = res.line5Count["301"]
+      line5Option.value.series[4].data = res.line5Count["302"]
+      line4Option.value.series[0].data = res.line4Count["all"]
+      line4Option.value.series[1].data = res.line4Count["100"]
+      line4Option.value.series[2].data = res.line4Count["200"]
+      line4Option.value.series[3].data = res.line4Count["301"]
+      line4Option.value.series[4].data = res.line4Count["302"]
       // 祈愿次数
-      var countres = getGachaCount(dataList)
-      this.barOption.xAxis[0].data=countres.barData.index
-      this.barOption.series[0].data=countres.barData.rank3weapon
-      this.barOption.series[1].data=countres.barData.rank4weapon
-      this.barOption.series[2].data=countres.barData.rank5weapon
-      this.barOption.series[3].data=countres.barData.rank4role
-      this.barOption.series[4].data=countres.barData.rank5role
-      this.heatmapOption.series.data=countres.heatmap.data
-      this.heatmapOption.calendar.range=countres.heatmap.range
+      var countres = getGachaCount(data)
+      barOption.value.xAxis[0].data=countres.barData.index
+      barOption.value.series[0].data=countres.barData.rank3weapon
+      barOption.value.series[1].data=countres.barData.rank4weapon
+      barOption.value.series[2].data=countres.barData.rank5weapon
+      barOption.value.series[3].data=countres.barData.rank4role
+      barOption.value.series[4].data=countres.barData.rank5role
+      // 热力图
+      let heatmap = getHeatMap(data)
+      heatmapOption.value.series.data=heatmap.data
+      heatmapOption.value.calendar.range=heatmap.range
       // 词云
-      this.wordOption.series[0].data=getWordCloudData(dataList)
+      wordOption.value.series[0].data=getWordCloudData(data)
       
-    },
+    }
     // 快捷选择池子，时间
-    selectGacha(){
-    },
-    // 祈愿类型选择
-    gachaTypeUpDate(event){
-      // 关闭悬浮框
-      this.showPopoverLeft = false
-      this.Init()
-    },
+    // selectGacha(){
+    // },
     // 更新起始/截止日期
-    UpDateTime(){
-      // 起始日期
-      if(this.currentPicker){
-        this.StartDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
-        this.EndMinDate = this.tmpDate
-      }else{
-        this.EndDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
-        this.StartMaxDate = this.tmpDate
-      }
-      this.DatePickerShow=false
-      this.Init()
-    },
-    // 点击日期输入框控制哪个日期选择器显示
-    DatePicker(isStart){
-      if(isStart){
-        this.currentPicker=true
-        this.DatePickerShow=true
-      }else{
-        this.currentPicker=false
-        this.DatePickerShow=true
-      }
-    },
+    // UpDateTime(){
+    //   // 起始日期
+    //   if(this.currentPicker){
+    //     this.StartDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
+    //     this.EndMinDate = this.tmpDate
+    //   }else{
+    //     this.EndDate = dateFormat("YYYY-mm-dd HH:MM",this.tmpDate)
+    //     this.StartMaxDate = this.tmpDate
+    //   }
+    //   this.DatePickerShow=false
+    //   this.Init()
+    // },
     // 读取JSON文件之后
-    async afterRead(file){
-      this.showPopoverRight=false
+    const afterRead =  async (file)=>{
       try{
           const json=await fileToJson(file.file)
-          var res = mergeJson(this.dataList,json)
+          var res = mergeJson(dataList.value,json)
           if(res.res){
             Notify({ type: 'success', message: '合并成功' });
-            this.Init()
-            localStorage.setItem("dataList", JSON.stringify(this.dataList));
+            Init()
+            localStorage.setItem("dataList", JSON.stringify(dataList.value));
           }else{
             Notify({ type: 'danger', message: '合并失败,可能是哪里出了问题🙁'});
           }
       }catch{
           Notify({ type: 'danger', message: '合并失败，可能是哪里出了问题🙁'});
       }
-    },
-    // 导出Excel
-    exportExcel(){
-      var res = gExcel(this.dataList)
-      Notify({ type: 'success', message: '导出成功' });
-      this.showPopoverRight=false
-    },
-    // 导出JSON
-    exportJson(){
-      var res = gRawJson(this.dataList)
-      Notify({ type: 'success', message: '导出成功' });
-      this.showPopoverRight=false
     }
-  }
-}
+    // 导出Excel
+    const exportExcel = ()=>{
+      var res = gExcel(dataList.value)
+      Notify({ type: 'success', message: '导出成功' });
+    }
+    // 导出JSON
+    const exportJson = ()=>{
+      var res = gRawJson(dataList.value)
+      Notify({ type: 'success', message: '导出成功' });
+    }
 </script>

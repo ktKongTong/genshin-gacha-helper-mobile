@@ -41,7 +41,8 @@ export default defineComponent({
   emits:{
       "exportJson":null,
       "exportExcel":null,
-      "afterRead":null
+      "afterRead":null,
+      "filter":null
   },
   setup(props, context){
 
@@ -55,7 +56,7 @@ export default defineComponent({
     }
     const submit = () =>{
       click()
-      console.log(menu.value)
+      context.emit("filter")
       // 更新数据
     }
     const click = ()=>{

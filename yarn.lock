@@ -273,6 +273,18 @@ date-fns@^2.16.1:
   resolved "https://registry.nlark.com/date-fns/download/date-fns-2.23.0.tgz#4e886c941659af0cf7b30fafdd1eaa37e88788a9"
   integrity sha1-TohslBZZrwz3sw+v3R6qN+iHiKk=
 
+dayjs@^1.10.6:
+  version "1.10.6"
+  resolved "https://registry.nlark.com/dayjs/download/dayjs-1.10.6.tgz#288b2aa82f2d8418a6c9d4df5898c0737ad02a63"
+  integrity sha1-KIsqqC8thBimydTfWJjAc3rQKmM=
+
+dom7@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.nlark.com/dom7/download/dom7-4.0.0.tgz#69c8fb9b170c92d64f385fdc37f81456e82b80a1"
+  integrity sha1-acj7mxcMktZPOF/cN/gUVugrgKE=
+  dependencies:
+    ssr-window "^4.0.0"
+
 echarts-wordcloud@^2.0.0:
   version "2.0.0"
   resolved "https://registry.npm.taobao.org/echarts-wordcloud/download/echarts-wordcloud-2.0.0.tgz?cache=0&sync_timestamp=1610777507090&other_urls=https%3A%2F%2Fregistry.npm.taobao.org%2Fecharts-wordcloud%2Fdownload%2Fecharts-wordcloud-2.0.0.tgz#52ef817895801ffe9e99dd1bacab7686b2dec04a"
@@ -643,10 +655,23 @@ ssf@~0.11.2:
   dependencies:
     frac "~1.1.2"
 
+ssr-window@^4.0.0:
+  version "4.0.0"
+  resolved "https://registry.nlark.com/ssr-window/download/ssr-window-4.0.0.tgz?cache=0&sync_timestamp=1629879256060&other_urls=https%3A%2F%2Fregistry.nlark.com%2Fssr-window%2Fdownload%2Fssr-window-4.0.0.tgz#4ee82fc360c5f88a022f321740bcfec59ada1a61"
+  integrity sha1-Tugvw2DF+IoCLzIXQLz+xZraGmE=
+
 string-hash@^1.1.1:
   version "1.1.3"
   resolved "https://registry.npm.taobao.org/string-hash/download/string-hash-1.1.3.tgz#e8aafc0ac1855b4666929ed7dd1275df5d6c811b"
   integrity sha1-6Kr8CsGFW0Zmkp7X3RJ1311sgRs=
+
+swiper@^7.0.2:
+  version "7.0.2"
+  resolved "https://registry.nlark.com/swiper/download/swiper-7.0.2.tgz#2678f1dc8503cf5875865c5026940a08eb8e298a"
+  integrity sha1-Jnjx3IUDz1h1hlxQJpQKCOuOKYo=
+  dependencies:
+    dom7 "^4.0.0"
+    ssr-window "^4.0.0"
 
 to-fast-properties@^2.0.0:
   version "2.0.0"

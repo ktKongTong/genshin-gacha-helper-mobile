@@ -10,14 +10,14 @@
     </div>
     <van-divider/>
     <div style="text-align:start;padding:10px 10px;font-size:14px">起始日期选择</div>     
-    <v-date-picker v-model="startDate" :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
+    <v-date-picker v-model="startDate" is-required :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
     <template v-slot="{ inputEvents }">
-        <van-field class="field" disabled v-on="inputEvents" v-model="startDateField"/>
+        <van-field class="field" disabled v-on="inputEvents"  v-model="startDateField"/>
     </template>
     </v-date-picker>
     <van-divider/>
     <div style="text-align:start;padding:10px 10px;font-size:14px">终止日期选择</div>
-    <v-date-picker v-model="endDate" :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
+    <v-date-picker v-model="endDate" is-required  :minute-increment='5' :popover='{placement:"auto-end",positionFixed:true}' mode="dateTime" is24hr>
     <template v-slot="{ inputEvents }">
         <van-field class="bottomfield field" disabled v-on="inputEvents" v-model="endDateField"/>
     </template>
@@ -29,6 +29,7 @@
 </template>
 <script>
 import {computed, ref, watch,defineExpose} from 'vue'
+import {dateFormat} from '../utils/dateUtils.js'
 export default {
     name:"selectMenu",
     props:{
@@ -42,13 +43,13 @@ export default {
     },
     setup(props,context){
         const gachaGroup=ref(["100","200","301","302"])
-        const startDate = ref(new Date())
+        const startDate = ref(new Date("2020-09-15 08:00"))
         const endDate = ref(new Date())
         const startDateField = computed(() => {
-        return startDate.value.toLocaleString()
+        return  dateFormat("YYYY-mm-dd HH:MM",startDate.value)
         })
         const endDateField = computed(() => {
-        return endDate.value.toLocaleString()
+        return  dateFormat("YYYY-mm-dd HH:MM",endDate.value)
         })
         const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
         // 提交条件筛选

@@ -98,7 +98,6 @@ export default {
             setState(5,"成功获取数据开始处理")
             setTimeout(()=>{
                     dialogVisible.value=false
-                    console.log(res)
                     router.push({
 			          name: 'Show',
 			          params: {
@@ -147,7 +146,6 @@ export default {
                                 hasData=false
                             }
                             dataList = dataList.concat(data.data.list)
-                            
                             page++;
                             end_id = data.data["list"].pop()["id"]
                         }else{

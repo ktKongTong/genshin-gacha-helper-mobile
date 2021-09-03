@@ -1,12 +1,14 @@
 // 数据处理
 import XLSX from "xlsx";
 import {saveAs} from 'file-saver'
+import * as dayjs from 'dayjs'
+import isSameOrBefore from 'dayjs/plugin/isSameOrBefore'
 import {dayAdd,compareDate} from './dateUtils'
 var tL=[{"name":"角色活动祈愿","value":"301"},
 {"name":"常驻祈愿","value":"200"},
 {"name":"新手祈愿","value":"100"},
 {"name":"武器活动祈愿","value":"302"}]
-
+dayjs.extend(isSameOrBefore)
 export function getWordCloudData(dataList){
     // name:"",value:""
     var data = dataList.sort(sortDataById).reverse()
@@ -37,9 +39,33 @@ export function sortDataById(a, b) {
         }
     }
 }
+export function getHeatMap(dataList){
+    let data = dataList.sort(sortDataById).reverse()
+    let heatmapData = []
+    let currentDate = dayjs("2020-09-15",'YYYY-MM-DD')
+    let heatmapRange=[]
+    if(data.length>0){
+        currentDate = dayjs(data[0].time.slice(0,10),'YYYY-MM-DD')
+        heatmapRange.push(data[0].time.slice(0,10))
+        let endDay= dayjs(data[data.length-1].time.slice(0,10),'YYYY-MM-DD','zh-cn').add(1, 'day').format('YYYY-MM-DD')
+        heatmapRange.push(endDay)
+        while(currentDate.isSameOrBefore(dayjs(data[data.length-1].time.slice(0,10),'YYYY-MM-DD'))){
+            let total = data.filter(function(value, index, array){
+                return value.time.slice(0,10) == this
+            },currentDate.format('YYYY-MM-DD')).length
+            heatmapData.push([currentDate.format('YYYY-MM-DD'),total])
+            currentDate = currentDate.add(1,"day")
+        }
+    }
+    return {
+        "data":heatmapData,
+        "range":heatmapRange
+    }
+}
 // 获取抽卡次数
 export function getGachaCount(dataList){
     var data = dataList.sort(sortDataById).reverse()
+    console.log(data)
     var serieslist = {
         "3星武器":[],
         "4星武器":[],
@@ -48,7 +74,6 @@ export function getGachaCount(dataList){
         "5星角色":[]
         // 可能添加单日不同池子的统计信息
     }
-    var heatmap = []
     var currentDate = "2020-09-15"
     var count3w=0
     var count4w=0
@@ -56,18 +81,14 @@ export function getGachaCount(dataList){
     var count4r=0
     var count5r=0
     var index = []
-    var heatmapRange=[]
     if(data.length>0){
         currentDate = data[0].time.slice(0,10)
-        heatmapRange.push(data[0].time.slice(0,10))
-        heatmapRange.push(data[data.length-1].time.slice(0,10))
     }
     data.forEach(elem=>{
         // 单日结束
         if(currentDate!=elem.time.slice(0,10)){
             // 结算上一日
             let total = count3w+count4w+count5w+count4r+count5r
-            heatmap.push([currentDate,total])
             serieslist["3星武器"].push(count3w)
             serieslist["4星武器"].push(count4w)
             serieslist["5星武器"].push(count5w)
@@ -82,7 +103,6 @@ export function getGachaCount(dataList){
             // 日期+1
             currentDate=dayAdd(currentDate)
             while(currentDate!=elem.time.slice(0,10)){
-                heatmap.push([currentDate,0])
                 serieslist["3星武器"].push(0)
                 serieslist["4星武器"].push(0)
                 serieslist["5星武器"].push(0)
@@ -118,10 +138,6 @@ export function getGachaCount(dataList){
             "rank4role":serieslist["4星角色"],
             "rank5role":serieslist["5星角色"],
             "index":index
-        },
-        "heatmap":{
-            "data":heatmap,
-            "range":heatmapRange
         }
     }
     return res
@@ -132,7 +148,7 @@ export function filterData(dataList,startTime,endTime,gachaTypeList){
     dataList.forEach(elem=>{
         if(gachaTypeList.indexOf(elem.gacha_type)>-1 && compareDate(elem.time,startTime) && compareDate(endTime,elem.time)){
             res.push(elem)
-        }  
+        } 
     })
     return res
 }
@@ -373,4 +389,4 @@ export async function fileToJson (file) {
     })
 }
 export default{gExcel,gRawJson,fileToJson,getPieData,sortDataById,
-    getRankCountData,getGachaCount,getWordCloudData,filterData}
+    getRankCountData,getGachaCount,getWordCloudData,filterData,getHeatMap}
