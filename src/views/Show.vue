@@ -211,12 +211,11 @@ const rankList= computed(()=>{
         let count4 = 1
         let restmp = gacha.reduce((total,currentValue)=>{
             if(currentValue.rank_type=="5"){
-                currentValue.rank5count = count5
+                currentValue.count5 = count5
                 total.rank5.push(currentValue)
                 count5=0
-                count4=0
             }else if(currentValue.rank_type=="4"){
-                currentValue.rank4count = count4
+                currentValue.count4 = count4
                 total.rank4.push(currentValue)
                 count4=0
             }
