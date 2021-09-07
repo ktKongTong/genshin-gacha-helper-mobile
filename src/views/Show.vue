@@ -3,7 +3,6 @@
 <div>
   <!-- 顶部自定义导航 -->
   <topNav ref="nav" @exportExcel="exportExcel" @exportJson="exportJson" @afterRead="afterRead" @filter="filter"></topNav>
-
 <van-tabs v-model:active="active" >
   <van-tab title="总览">
     <div>
@@ -75,7 +74,7 @@
     :mousewheel="true"
   >
     <swiper-slide>
-        <v-chart :init-options= "{width:800,height:160}" :option="heatmapOptionComputed"/>
+        <v-chart style="width:100vw" ref='calendar' :init-options= "calendarInitOption" :option="calendarOptionComputed"/>
     </swiper-slide>
   </swiper>
     </div>
@@ -103,6 +102,36 @@
   }
 </style>
 <script setup name="Show">
+import { use } from "echarts/core";
+import 'echarts-wordcloud'
+import {
+  CanvasRenderer
+} from 'echarts/renderers'
+import {
+  BarChart,PieChart,HeatmapChart,LineChart,ScatterChart
+} from 'echarts/charts'
+import {
+  LegendComponent,
+  GridComponent,
+  TooltipComponent,
+  TitleComponent,
+  DataZoomSliderComponent,
+  CalendarComponent,
+  VisualMapComponent,
+} from 'echarts/components'
+use([
+  CanvasRenderer,
+  PieChart,BarChart,HeatmapChart,LineChart,
+  LegendComponent,
+  GridComponent,
+  TooltipComponent,
+  DataZoomSliderComponent,
+  TitleComponent,
+  CalendarComponent,
+  VisualMapComponent,
+  ScatterChart
+]);
+
 import { onMounted,ref,computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -111,6 +140,7 @@ import "swiper/css/scrollbar"
 import 'swiper/css'
 import SwiperCore, { Scrollbar,Mousewheel } from 'swiper'
 SwiperCore.use([Scrollbar,Mousewheel])
+
 
 import _ from 'lodash'
 import dayjs from 'dayjs'
@@ -198,11 +228,12 @@ const rankList= computed(()=>{
         gachaRes["all"].rank5 = gachaRes["all"].rank5.concat(gachaRes[gachaCode[i]].rank5).sort(sortDataById).reverse()
         gachaRes["all"].rank4 = gachaRes["all"].rank4.concat(gachaRes[gachaCode[i]].rank4).sort(sortDataById).reverse()
     }
+    console.log(gachaRes)
     return gachaRes
 })
 // 经过筛选的rankList,tmpList改变之后再筛选
 // 此处应该在filter 确定之后再筛选
-const rankListFiltered = ref({"all":{},"100":{},"200":{},"301":{},"302":{}})
+const rankListFiltered = ref({"all":{rank5:[],rank4:[]},"100":{rank5:[],rank4:[]},"200":{rank5:[],rank4:[]},"301":{rank5:[],rank4:[]},"302":{rank5:[],rank4:[]}})
 // 当进行筛选的时候，触发rankList的筛选
 watch(()=>tmpList.value,()=>{
   console.log("watchRankList")
@@ -220,6 +251,7 @@ watch(()=>tmpList.value,()=>{
 })
 // 出货次数均值,基于rankListFiltered
 const rankAvg = computed(()=>{
+  console.log(rankListFiltered.value)
   let rankArray = ["rank5","rank4"]
   // let 
   let avgRes = {}
@@ -249,9 +281,8 @@ const pieOptionComputed = computed(()=>{
             return str;
         },
       },
-      // 图例配置
       legend: {
-          top:"8%",
+          top:20,
           type: "scroll",
           itemGap:6,
           itemWidth:14,
@@ -261,14 +292,16 @@ const pieOptionComputed = computed(()=>{
       series: [{
         name: ' ',
         type: 'pie',
-        top:"15%",
-        radius: '50%',
+        radius: ['30%', '45%'],
+        itemStyle: {
+                borderRadius: 5,
+                borderColor: '#fff',
+                borderWidth: 0.5
+            },
         label:{
           formatter: function (params) {
-              let str = params.name + "\n";
-              str=str+""+params.value
-              let per = params.percent
-              str = str+"("+per+"%)"
+              let str = params.name + "\n"+params.value;
+              str = str+"("+params.percent+"%)"
               return str;
           },
         },
@@ -349,66 +382,87 @@ let option = {
   }
   return option
 })
-
+// calendar
+const calendar = ref(null)
 // 热力图,基于tmpList.value
-const heatmapOptionComputed = computed(()=>{
+const calendarInitOption = ref({})
+const calendarOptionComputed = computed(()=>{
   let option = {
-      title: {left: 'left',text: '祈愿热力图'},
+      title: {left: 50,text: '祈愿热力图'},
       tooltip: {
         formatter:function (params) {return params.data[0]+" : "+params.data[1]}
       },
       calendar: {
           splitLine:{show:false},
           top: 50,
-          cellSize: [14, 14],
-          range: ['2021-04-15', dayjs().format("YYYY-MM-DD")],
-          itemStyle: {borderWidth: 4,borderColor:"#ffffff"},
-          dayLabel:{firstDay:1,position:"end",nameMap:"cn"},
-          monthLabel:{fontSize:10},
-          yearLabel: {show: false,}
+          left:120,
+          cellSize: [15, 15],
+          range: ['2020-09-15', dayjs().format("YYYY-MM-DD")],
+          itemStyle: {borderColor:"#ffffff"},
+          dayLabel:{firstDay:1,position:"start",nameMap:"cn"},
+          monthLabel:{fontSize:8,
+            formatter: '{yy}-{MM}',
+            overflow:'break'
+          },
+          yearLabel: {show: false}
       },
       visualMap:{
         type:"piecewise",
-        // 朝向水平 超出部分无法换行
-        // orient: 'horizontal',
-        itemGap:5,
+        top:30,
+        left: 20,
         textGap:2,
-        top: 30,    
-        itemWidth:12,
-        itemHeight:12,
+        itemGap:3,
+        itemWidth:14,
+        itemHeight:14,
+        bottom:5,
         pieces: [{min:50,color:'#134121'},
-          // {min: 50,max:100,color:'#19532B'},
           {min: 20, max: 50,color:'#24763D'},
           {min: 10, max: 20,color:'#2B8D49'},
           {min: 5, max: 10,color:'#3AC063'},
           {min: 3, max: 5,color:"#72D490"},
           {min: 1, max: 3,color:"#9be9a8"},
           {max: 1,color:"#ebedf0"}],
+      // orient:"horizontal"
       },
-      series: {type: 'heatmap',coordinateSystem: 'calendar',data: []}
+      series: {
+      type: 'scatter',
+      symbol:'roundRect',
+      coordinateSystem: 'calendar',data: []}
   }
-    console.log("watchHeatmapOption")
+  console.log("watchCalendarOption")
   let data = tmpList.value
-  let heatmapData = []
+  let calendarData = []
   let currentDate = dayjs("2020-09-15",'YYYY-MM-DD')
-  let heatmapRange=[]
+  let calendarRange=[]
   if(data.length>0){
       currentDate = dayjs(data[0].time.slice(0,10),'YYYY-MM-DD')
-      heatmapRange.push(data[0].time.slice(0,10))
+      calendarRange.push(data[0].time.slice(0,10))
       let endDay= dayjs(data[data.length-1].time.slice(0,10)).add(1, 'day').format('YYYY-MM-DD')
-      heatmapRange.push(endDay)
+      calendarRange.push(endDay)
       while(currentDate.isSameOrBefore(dayjs(data[data.length-1].time.slice(0,10),'YYYY-MM-DD'))){
           let total = data.filter(function(value, index, array){
               return value.time.slice(0,10) == this
           },currentDate.format('YYYY-MM-DD')).length
-          heatmapData.push([currentDate.format('YYYY-MM-DD'),total])
+          calendarData.push([currentDate.format('YYYY-MM-DD'),total])
           currentDate = currentDate.add(1,"day")
       }
   }
-  option.series.data=heatmapData
-  option.calendar.range=heatmapRange
+  option.series.data=calendarData
+  option.calendar.range=calendarRange
   return option
 })
+// 当calendar更新时，calendar刷新宽度
+watch(()=>calendarOptionComputed.value,(option)=>{
+  console.log(option.calendar.range)
+  let days = (dayjs(option.calendar.range[1]).valueOf()-dayjs(option.calendar.range[0]).valueOf())/(1000*3600*24)
+  let length = parseInt(days/7)+2
+  if(calendar.value){
+    calendar.value.resize({width: (120+length*15)>300?50+length*15:300})
+  }else{
+    calendarInitOption.value = {width: 120+length*15,height:180}
+  }
+},{deep:true})
+
 // 词云,基于tmpList.value
 const wordOptionComputed = computed(()=>{
   let option = {
@@ -508,14 +562,17 @@ onMounted(()=>{
     }
   }catch{
   }
+  // console.log(calendar.value)
   filter()
   localStorage.setItem("dataList", JSON.stringify(dataList.value));
 }catch{
+  // console.log(calendar.value)
   Notify({ type: 'danger', message: '数据没传递过来呢,尝试从本地取数据' });
   dataList.value = JSON.parse(localStorage.getItem("dataList"))||[];
   filter()
 }
 })
+
 // 排序
 const sortDataById=(a, b)=> {
     for(let i=0;i<a.id.length;i++){
@@ -535,6 +592,7 @@ try{
     if(res.res){
       dataList.value = res.data
       Notify({ type: 'success', message: '合并成功' });
+      
       filter()
       localStorage.setItem("dataList", JSON.stringify(dataList.value));
     }else{
@@ -558,3 +616,8 @@ const exportJson = ()=>{
   Notify({ type: 'success', message: '导出成功' });
 }
 </script>
+<style>
+.echarts > div{
+  margin: 0 auto !important;
+}
+</style>
