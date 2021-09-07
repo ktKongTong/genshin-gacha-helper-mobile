@@ -17,6 +17,7 @@
       <!-- JSON/Excel导出 -->
       <van-cell title="JSON  记录导出"  v-on:click="clickRightMenu('exportJson')"/>
       <van-cell title="Excel 记录导出"  v-on:click="clickRightMenu('exportExcel')"/>
+      <!-- <van-cell title="生成祈愿报告" /> -->
       <!-- 跳转分析祈愿 -->
       <van-cell title="祈愿记录分析工具" arrow-direction='t' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
