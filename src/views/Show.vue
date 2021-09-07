@@ -74,7 +74,7 @@
     :mousewheel="true"
   >
     <swiper-slide>
-        <v-chart style="width:100vw" ref='calendar' :init-options= "calendarInitOption" :option="calendarOptionComputed"/>
+        <v-chart ref='calendar' :init-options= "calendarInitOption" :option="calendarOptionComputed"/>
     </swiper-slide>
   </swiper>
     </div>
