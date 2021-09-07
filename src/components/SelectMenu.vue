@@ -22,48 +22,26 @@
         <van-field class="bottomfield field" disabled v-on="inputEvents" v-model="endDateField"/>
     </template>
     </v-date-picker>
-    <van-button v-on:click="submit">确定</van-button>
+    <van-button v-on:click="emit('filterSubmit')">确定</van-button>
 </div>
 
 </transition>
 </template>
-<script>
-import {computed, ref, watch,defineExpose} from 'vue'
-import {dateFormat} from '../utils/dateUtils.js'
-export default {
-    name:"selectMenu",
-    props:{
-      show: {
-          type:Boolean,
-          default:false
-      }
-    },
-    emits:{
-        "filterSubmit":null
-    },
-    setup(props,context){
-        const gachaGroup=ref(["100","200","301","302"])
-        const startDate = ref(new Date("2020-09-15 08:00"))
-        const endDate = ref(new Date())
-        const startDateField = computed(() => {
-        return  dateFormat("YYYY-mm-dd HH:MM",startDate.value)
-        })
-        const endDateField = computed(() => {
-        return  dateFormat("YYYY-mm-dd HH:MM",endDate.value)
-        })
-        const names = ref([{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}])      
-        // 提交条件筛选
-        const submit = () => {
-            context.emit("filterSubmit")
-        }
-        return{
-            gachaGroup,names,
-            startDate,endDate,
-            startDateField,endDateField,
-            submit
-        }
-    }
-}
+<script setup name='selectMenu'>
+import {computed, ref} from 'vue'
+import dayjs from 'dayjs'
+dayjs().locale('zh-cn')
+const props = defineProps({show:Boolean})
+const emit = defineEmits(['filterSubmit'])
+const gachaGroup=ref(["100","200","301","302"])
+const startDate = ref(dayjs("2020-09-15 08:00").toDate())
+const endDate = ref(dayjs().startOf('hour').add(1,'hour').toDate())
+defineExpose({
+    startDate,endDate,gachaGroup
+})
+const startDateField = computed(() => dayjs(startDate.value).format("YYYY-MM-DD HH:mm"))
+const endDateField = computed(() => dayjs(endDate.value).format("YYYY-MM-DD HH:mm"))
+const names = [{"name":"新手祈愿", "value":"100"},{"name":"常驻祈愿", "value":"200"},{"name":"角色活动祈愿", "value":"301"},{"name":"武器活动祈愿", "value":"302"}]
 </script>
 <style scoped>
     .menumask{
@@ -102,4 +80,7 @@ export default {
     .field{
          margin-left: 10px;
     }
+    .van-checkbox{
+    margin:5px auto;
+  }
 </style>
