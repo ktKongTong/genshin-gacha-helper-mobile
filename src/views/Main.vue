@@ -46,7 +46,7 @@
 import {ref} from 'vue'
 import { useRouter } from 'vue-router'
 import axios from 'axios'
-import { Dialog } from 'vant';
+import { Dialog } from 'vant'
 export default {
    setup(){
       const router = useRouter();

@@ -1,7 +1,7 @@
 <template>
 <div class="mytopNav">
     <!-- 左侧栏 -->
-    <div class='nav-left'  v-on:click="click">
+    <div class='nav-left'  v-on:click="clickLeftMenu">
     <van-icon name="ellipsis" />
     </div>
     <!-- <div class="nav-center">
@@ -15,8 +15,8 @@
       </van-uploader>
     <van-cell-group>
       <!-- JSON/Excel导出 -->
-      <van-cell title="JSON  记录导出"  v-on:click="context.emit('exportJson')"/>
-      <van-cell title="Excel 记录导出"  v-on:click="context.emit('exportExcel')"/>
+      <van-cell title="JSON  记录导出"  v-on:click="clickRightMenu('exportJson')"/>
+      <van-cell title="Excel 记录导出"  v-on:click="clickRightMenu('exportExcel')"/>
       <!-- 跳转分析祈愿 -->
       <van-cell title="祈愿记录分析工具" arrow-direction='t' is-link url="https://genshin-gacha-analyzer.vercel.app/"/>
     </van-cell-group>
@@ -25,54 +25,36 @@
     </template>
     </van-popover>
     </div>
-    
 </div>
 <select-menu ref="menu" @filterSubmit="submit" :show="showPopoverLeft"></select-menu>
 </template>
 
-<script>
+<script setup name='topNav'>
 import selectMenu from './SelectMenu.vue'
-import {ref,defineComponent,onMounted} from 'vue'
-export default defineComponent({
-  name:'topNav',
-  components:{
-    selectMenu
-  },
-  emits:{
-      "exportJson":null,
-      "exportExcel":null,
-      "afterRead":null,
-      "filter":null
-  },
-  setup(props, context){
-
-    const menu = ref(null)
-    const showPopoverLeft = ref(false)
-    const showPopoverRight = ref(false)
-    const tmpDate = ref("")
-    const afterRead = (file)=>{
-      console.log(file)
-      context.emit('afterRead',file)
-    }
-    const submit = () =>{
-      click()
-      context.emit("filter")
-      // 更新数据
-    }
-    const click = ()=>{
-      showPopoverLeft.value = !showPopoverLeft.value
-      if(showPopoverLeft.value){
-        document.body.style.overflow = 'hidden'
-      }else{
-        document.body.style.overflow = ''
-      }
-    }
-    return{
-        showPopoverLeft,showPopoverRight,
-        click,submit,menu,afterRead,context
-    }
-  }   
-})
+import {ref} from 'vue'
+  const emit = defineEmits(['exportJson', 'exportExcel','afterRead','filter'])
+  const menu = ref(null)
+  defineExpose({
+    menu
+  })
+  const showPopoverLeft = ref(false)
+  const showPopoverRight = ref(false)
+  const afterRead = (file)=>{
+    showPopoverRight.value=!showPopoverRight.value;
+    emit('afterRead',file)
+  }
+  const submit = () =>{
+    clickLeftMenu()
+    emit("filter")
+  }
+  const clickRightMenu = (name)=>{
+    showPopoverRight.value=!showPopoverRight.value;
+    context.emit(name)
+  }
+  const clickLeftMenu = ()=>{
+    showPopoverLeft.value = !showPopoverLeft.value
+    document.body.style.overflow = showPopoverLeft.value?'hidden':''
+  }
 </script>
 
 <style scoped>
