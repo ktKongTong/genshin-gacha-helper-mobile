@@ -49,7 +49,7 @@ import {ref} from 'vue'
   }
   const clickRightMenu = (name)=>{
     showPopoverRight.value=!showPopoverRight.value;
-    context.emit(name)
+    emit(name)
   }
   const clickLeftMenu = ()=>{
     showPopoverLeft.value = !showPopoverLeft.value
