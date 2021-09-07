@@ -146,11 +146,8 @@ const dataList=ref([])
 watch(()=>dataList.value,()=>{
   console.log("dataList changed")
 })
+
 const tmpList = ref([])
-// 筛选数据时改变tmpList
-// const filterData = ()=>{
-//   tmpList.value = _.cloneDeep(dataList.value.sort(sortDataById).reverse())
-// }
 // 概率计算
 const rankRate = computed(()=>{
     let rankRate = {rank5:0,rank4:0,rank3:0}
@@ -162,14 +159,6 @@ const rankRate = computed(()=>{
     }
     return rankRate
 })
-// const rankRate=ref({rank5:0,rank4:0,rank3:0})
-// watch(()=>tmpList.value,(data)=>{
-//     if(data.length!=0){
-//         for(const i in  rankRate.value){
-//             rankRate.value[i] = (data.filter(elem=>elem.rank_type==i.slice(4,5)).length/data.length*100).toFixed(2)
-//         }
-//     }
-// })
 
 // 由子组件触发
 const filter = ()=>{
@@ -360,64 +349,6 @@ let option = {
   }
   return option
 })
-// const barOption = ref({
-//   dataZoom: [{type:'slider' },],
-//   color:['#5470c6', '#AD1AF5', '#fac858', '#ff8c00', '#ffe700'], 
-//   tooltip: {trigger: 'axis',axisPointer: {type: 'shadow'}},
-//   legend: {
-//       itemGap:6,
-//       itemWidth:14,
-//       left: 'center',
-//       data: ["3星武器","4星武器","5星武器","4星角色","5星角色"]
-//   },
-//   // grid: {left: '3%',right: '4%',containLabel: true},
-//   xAxis: [{type: 'category',data: [" "]}],
-//   yAxis: [{type: 'value'}],
-//   series: [
-//       {
-//         name: '3星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
-//         data: [0],legendHoverLink: false
-//       },{
-//           name: '4星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
-//           data: [0],legendHoverLink: false
-//       },{
-//           name: '5星武器',type: 'bar',stack:'day',emphasis: {focus: 'series'},
-//           data: [0],legendHoverLink: false
-//       },{
-//           name: '4星角色',type: 'bar',stack:'day',emphasis: {focus: 'series'},
-//           data: [0],legendHoverLink: false
-//       },{
-//           name: '5星角色',type: 'bar',stack:'day',emphasis: {focus: 'series'},
-//           data: [0],legendHoverLink: false
-//       }]
-// })
-// watch(()=>tmpList.value,(data)=>{ 
-//   console.log("watchBarOption")
-//   let type = ["3星武器","4星武器","5星武器","4星角色","5星角色"]
-//   let bucket = {}
-//   let index = []
-//   if(data.length<=0){
-//     return
-//   }
-//   for (let i in type){
-//     bucket[type[i]] = []
-//   }
-//   // 先按日期分组
-//   let grouped = _.groupBy(data,elem=>elem.time.slice(0,10))
-//   // 对日期遍历
-//   for (let item in _.keys(grouped)){
-//     index.push(_.keys(grouped)[item])
-//     let counted = _.countBy(grouped[_.keys(grouped)[item]],elem=>elem.rank_type+"星"+elem.item_type)
-//     for (let i in type){
-//       bucket[type[i]].push(counted[type[i]]||0)
-//     }
-//   }
-//   barOption.value.xAxis[0].data = index
-//   for(let i in type){
-//     barOption.value.series[i].data=bucket[type[i]]
-//   }
-// })
-
 
 // 热力图,基于tmpList.value
 const heatmapOptionComputed = computed(()=>{
@@ -478,63 +409,6 @@ const heatmapOptionComputed = computed(()=>{
   option.calendar.range=heatmapRange
   return option
 })
-// const heatmapOption = ref({
-//     title: {left: 'left',text: '祈愿热力图'},
-//     tooltip: {
-//       formatter:function (params) {return params.data[0]+" : "+params.data[1]}
-//     },
-//     calendar: {
-//         splitLine:{show:false},
-//         top: 50,
-//         cellSize: [14, 14],
-//         range: ['2021-04-15', dayjs().format("YYYY-MM-DD")],
-//         itemStyle: {borderWidth: 4,borderColor:"#ffffff"},
-//         dayLabel:{firstDay:1,position:"end",nameMap:"cn"},
-//         monthLabel:{fontSize:10},
-//         yearLabel: {show: false,}
-//     },
-//     visualMap:{
-//       type:"piecewise",
-//       // 朝向水平 超出部分无法换行
-//       // orient: 'horizontal',
-//       itemGap:5,
-//       textGap:2,
-//       top: 30,    
-//       itemWidth:12,
-//       itemHeight:12,
-//       pieces: [{min:50,color:'#134121'},
-//         // {min: 50,max:100,color:'#19532B'},
-//         {min: 20, max: 50,color:'#24763D'},
-//         {min: 10, max: 20,color:'#2B8D49'},
-//         {min: 5, max: 10,color:'#3AC063'},
-//         {min: 3, max: 5,color:"#72D490"},
-//         {min: 1, max: 3,color:"#9be9a8"},
-//         {max: 1,color:"#ebedf0"}],
-//     },
-//     series: {type: 'heatmap',coordinateSystem: 'calendar',data: []}
-// })
-// watch(()=>tmpList.value,(newValue)=>{
-//     console.log("watchHeatmapOption")
-//   let data = newValue.sort(sortDataById).reverse()
-//   let heatmapData = []
-//   let currentDate = dayjs("2020-09-15",'YYYY-MM-DD')
-//   let heatmapRange=[]
-//   if(data.length>0){
-//       currentDate = dayjs(data[0].time.slice(0,10),'YYYY-MM-DD')
-//       heatmapRange.push(data[0].time.slice(0,10))
-//       let endDay= dayjs(data[data.length-1].time.slice(0,10),'YYYY-MM-DD','zh-cn').add(1, 'day').format('YYYY-MM-DD')
-//       heatmapRange.push(endDay)
-//       while(currentDate.isSameOrBefore(dayjs(data[data.length-1].time.slice(0,10),'YYYY-MM-DD'))){
-//           let total = data.filter(function(value, index, array){
-//               return value.time.slice(0,10) == this
-//           },currentDate.format('YYYY-MM-DD')).length
-//           heatmapData.push([currentDate.format('YYYY-MM-DD'),total])
-//           currentDate = currentDate.add(1,"day")
-//       }
-//   }
-//   heatmapOption.value.series.data=heatmapData
-//   heatmapOption.value.calendar.range=heatmapRange
-// })
 // 词云,基于tmpList.value
 const wordOptionComputed = computed(()=>{
   let option = {
@@ -579,47 +453,6 @@ const wordOptionComputed = computed(()=>{
     option.series[0].data = res
     return option
 })
-// const wordOption = ref({
-//       tooltip:{
-//           trigger: 'item',
-//           triggerOn: "mousemove",
-//           formatter:"{b0}: {c0}"
-//       },
-//       series: [{
-//       name: '祈愿词云',
-//       type: 'wordCloud',
-//       maskImage: '',
-//       left: 'center',
-//       top: 'center',
-//       sizeRange: [12, 60],
-//       rotationStep: 45,
-//       gridSize: 1,
-//       layoutAnimation: true,
-//       textStyle: {
-//           fontFamily: 'sans-serif',
-//           fontWeight: 'bold',
-//           color: function () {
-//               return 'rgb(' + [Math.round(Math.random() * 160),Math.round(Math.random() * 160),Math.round(Math.random() * 160)].join(',') + ')';
-//           }
-//       },
-//       data: []
-//       }]
-//     })
-// watch(()=>tmpList.value,(data)=>{  
-//     console.log("watchWordOption")
-//     let tmp = {}
-//     data.forEach(elem=>{
-//         tmp[elem.name] = tmp.hasOwnProperty(elem.name)?tmp[elem.name]+1:1
-//     })
-//     let res = []
-//     for(let elem in tmp){
-//         res.push({
-//             "name":elem,
-//             "value":tmp[elem]
-//         })
-//     }
-//     wordOption.value.series[0].data = res
-// })
 
 // 线图,基于rankListFiltered
 // 出货次数分布(同时提供多五星出货次数分布)
@@ -683,7 +516,7 @@ onMounted(()=>{
   filter()
 }
 })
-
+// 排序
 const sortDataById=(a, b)=> {
     for(let i=0;i<a.id.length;i++){
         if(parseInt(a.id[i])>parseInt(b.id[i])){
@@ -693,7 +526,6 @@ const sortDataById=(a, b)=> {
         }
     }
 }
-
 
 // 读取JSON文件之后
 const afterRead =  async (file)=>{
