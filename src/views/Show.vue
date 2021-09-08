@@ -65,19 +65,9 @@
     </div>
   </van-tab>
   <van-tab title="祈愿次数">
-    <div>
-      <swiper
-    :direction="'horizontal'"
-    :slidesPerView="'auto'"
-    :freeMode="true"
-    :scrollbar="true"
-    :mousewheel="true"
-  >
-    <swiper-slide>
-        <v-chart ref='calendar' :init-options= "calendarInitOption" :option="calendarOptionComputed"/>
-    </swiper-slide>
-  </swiper>
-    </div>
+
+      <v-chart style="overflow:auto;width:100vw;height:100%" ref='calendar' :init-options= "calendarInitOption" :option="calendarOptionComputed"/>
+
     <div>
       <v-chart autoresize style="height:60vh" :option="barOptionComputed"/>
     </div>
@@ -88,19 +78,8 @@
     </div>
   </van-tab>
 </van-tabs>
-<div>{{}}</div>
 </div>
 </template>
-<style>
-  .swiper {
-  width: 100%;
-  height: 100%;
-  }
-  .swiper-slide {
-      overflow: auto;  
-      -webkit-overflow-scrolling: touch;   
-  }
-</style>
 <script setup name="Show">
 import { use } from "echarts/core";
 import 'echarts-wordcloud'
@@ -135,11 +114,11 @@ use([
 import { onMounted,ref,computed, watch } from 'vue'
 import { useRoute } from 'vue-router'
 
-import { Swiper, SwiperSlide } from 'swiper/vue'
-import "swiper/css/scrollbar"
-import 'swiper/css'
-import SwiperCore, { Scrollbar,Mousewheel } from 'swiper'
-SwiperCore.use([Scrollbar,Mousewheel])
+// import { Swiper, SwiperSlide } from 'swiper/vue'
+// import "swiper/css/scrollbar"
+// import 'swiper/css'
+// import SwiperCore, { Scrollbar,Mousewheel } from 'swiper'
+// SwiperCore.use([Scrollbar,Mousewheel])
 
 
 import _ from 'lodash'
@@ -154,6 +133,7 @@ dayjs().locale('zh-cn')
 import { Notify } from 'vant';
 import topNav from '../components/TopNav.vue'
 import {gExcel,gRawJson,mergeJson,fileToJson} from '../utils/dealData.js'
+
 
 const route = useRoute();
 const nav = ref(null)
@@ -227,7 +207,7 @@ const rankList= computed(()=>{
         gachaRes["all"].rank5 = gachaRes["all"].rank5.concat(gachaRes[gachaCode[i]].rank5).sort(sortDataById).reverse()
         gachaRes["all"].rank4 = gachaRes["all"].rank4.concat(gachaRes[gachaCode[i]].rank4).sort(sortDataById).reverse()
     }
-    console.log(gachaRes)
+    // console.log(gachaRes)
     return gachaRes
 })
 // 经过筛选的rankList,tmpList改变之后再筛选
@@ -250,7 +230,7 @@ watch(()=>tmpList.value,()=>{
 })
 // 出货次数均值,基于rankListFiltered
 const rankAvg = computed(()=>{
-  console.log(rankListFiltered.value)
+  // console.log(rankListFiltered.value)
   let rankArray = ["rank5","rank4"]
   // let 
   let avgRes = {}
@@ -456,8 +436,10 @@ watch(()=>calendarOptionComputed.value,(option)=>{
   let days = (dayjs(option.calendar.range[1]).valueOf()-dayjs(option.calendar.range[0]).valueOf())/(1000*3600*24)
   let length = parseInt(days/7)+2
   if(calendar.value){
-    calendar.value.resize({width: (120+length*15)>300?50+length*15:300})
+    console.log("calendar resize width"+(120+length*15)>300?120+length*15:300)
+    calendar.value.resize({width: (120+length*15)>300?120+length*15:300})
   }else{
+    console.log(120+length*15)
     calendarInitOption.value = {width: 120+length*15,height:180}
   }
 },{deep:true})
@@ -596,11 +578,11 @@ try{
       localStorage.setItem("dataList", JSON.stringify(dataList.value));
     }else{
       dataList.value = res.data
-      console.log("error1")
+      // console.log("error1")
       Notify({ type: 'danger', message: '合并失败,可能是哪里出了问题🙁'});
     }
 }catch{
-  console.log("error2")
+  // console.log("error2")
     Notify({ type: 'danger', message: '合并失败，可能是哪里出了问题🙁'});
 }
 }
@@ -619,4 +601,7 @@ const exportJson = ()=>{
 .echarts > div{
   margin: 0 auto !important;
 }
+/* .swiper-slide {
+    overflow: auto;
+} */
 </style>
