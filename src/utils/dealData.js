@@ -29,6 +29,7 @@ export function mergeJson(dataList,json){
     }
     // 导出json数据格式
     try{
+        // console.log(json)
         json.gachaType.forEach(item=>{
         let data = json.gachaLog[parseInt(item.key)]
         data.forEach(elem=>{
@@ -39,7 +40,8 @@ export function mergeJson(dataList,json){
             }
         })
         })
-    }catch{
+    }catch(e){
+        console.log(e)
         return {data:dataList,res:false}
     }
     return {data:dataList.sort(sortDataById),res:true}

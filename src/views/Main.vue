@@ -34,7 +34,9 @@
                 border-top-left-radius: 10px;
                 border-top-right-radius: 10px;
                 line-height:4;
-                ">{{stateMsg}}</div>
+                ">
+                    {{stateMsg}}
+                </div>
                 <van-steps direction="vertical" :active="active" active-icon="success" active-color="#38f">          
                 <van-step v-for="item in requestSteps" :key="item">{{item}}</van-step>
                 </van-steps>

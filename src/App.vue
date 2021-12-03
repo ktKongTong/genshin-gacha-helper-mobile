@@ -1,17 +1,13 @@
 <template>
   <router-view class="content"/>
 <div class='footer'>任何想法建议/Bug可到
-<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>进行反馈</div>
+<van-tag v-on:click="jump"  plain type="primary">Github Issue</van-tag>进行反馈
+</div>
 </template>
-<script>
-export default {
-  name: 'App',
-  method:{
-    jump(){
+<script setup>
+    const jump = ()=>{
       window.location.href='https://github.com/ktKongTong/genshin-gacha-helper-mobile/issues'
     }
-  }
-}
 </script>
 
 <style>
